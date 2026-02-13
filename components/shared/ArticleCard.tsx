@@ -37,7 +37,7 @@ export default function ArticleCard({ title, excerpt, date, category, imageUrl, 
                     <span>{date}</span>
                 </div>
                 <h3 className="text-lg font-bold font-heading text-neutral-900 mb-2 group-hover:text-dravida-red transition-colors">
-                    <Link href={`/article/${slug}`}>
+                    <Link href={`/article?slug=${slug}`}>
                         {title}
                     </Link>
                 </h3>
@@ -45,7 +45,7 @@ export default function ArticleCard({ title, excerpt, date, category, imageUrl, 
                     {excerpt}
                 </p>
                 <Link
-                    href={`/article/${slug}`}
+                    href={`/article?slug=${slug}`}
                     className="text-dravida-red text-sm font-medium hover:underline mt-auto"
                 >
                     Read More

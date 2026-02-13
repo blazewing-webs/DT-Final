@@ -34,7 +34,7 @@ export default function Sidebar({ title, articles, className }: SidebarProps) {
                             image={article.image}
                             category={article.category}
                             date={article.date}
-                            href={`/article/${article.slug}`}
+                            href={`/article?slug=${article.slug}`}
                             variant="sidebar" // Using 'sidebar' variant
                             className="flex-1 !border-b-0 !py-0" // Override styles if needed
                         />

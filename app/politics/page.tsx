@@ -2,13 +2,6 @@ import PageHeader from "@/components/shared/PageHeader";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import NewsCard from "@/components/news/NewsCard";
-
-"use client";
-
-import PageHeader from "@/components/shared/PageHeader";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import NewsCard from "@/components/news/NewsCard";
 import { useArticles } from "@/hooks/useArticles";
 import { Loader2 } from "lucide-react";
 
@@ -46,7 +39,7 @@ export default function PoliticsPage() {
                                 category={article.category}
                                 author={article.author}
                                 date={article.date}
-                                href={`/article/${article.slug}`}
+                                href={`/article?slug=${article.slug}`}
                                 variant="standard"
                                 className="h-full"
                             />

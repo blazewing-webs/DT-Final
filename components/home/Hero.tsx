@@ -24,7 +24,7 @@ export default function Hero() {
                     </p>
                     <div className="flex flex-wrap gap-4 pt-4">
                         <Link
-                            href="/article/social-justice-continues"
+                            href="/article?slug=social-justice-continues"
                             className="flex items-center gap-2 bg-dravida-red px-6 py-3 rounded-md font-medium hover:bg-red-700 transition"
                         >
                             Read Story <ArrowRight className="h-4 w-4" />

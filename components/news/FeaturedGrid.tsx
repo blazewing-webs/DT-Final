@@ -89,7 +89,7 @@ export default function FeaturedGrid({ quote, quoteAuthor }: FeaturedGridProps) 
                                 category={article.category}
                                 author={article.author}
                                 date={article.date}
-                                href={`/article/${article.slug}`}
+                                href={`/article?slug=${article.slug}`}
                                 variant="overlay"
                                 size={cardSize}
                                 className="h-full w-full"

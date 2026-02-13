@@ -51,7 +51,7 @@ export default function CategoryFeed({ title, queryCategory, href, limit = 4 }: 
                             category={article.category}
                             author={article.author}
                             date={article.date}
-                            href={`/article/${article.slug}`}
+                            href={`/article?slug=${article.slug}`}
                             variant="standard"
                             className="h-full"
                         />
