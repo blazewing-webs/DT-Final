@@ -115,7 +115,7 @@ export default function ArticlesListPage() {
                                         <td className="p-4 text-right">
                                             <div className="flex items-center justify-end gap-2">
                                                 <Link
-                                                    href={`/admin/articles/${article.id}`}
+                                                    href={`/admin/articles/edit?id=${article.id}`}
                                                     className="p-2 text-neutral-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                                                 >
                                                     <Edit className="w-4 h-4" />

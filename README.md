@@ -32,3 +32,8 @@ This project is configured to deploy automatically to GitHub Pages using GitHub 
 ### Important Note on Images
 - Since we are using a custom domain at the root, we removed `basePath` from `next.config.js`.
 - All images in the `public` folder are referenced correctly using `next/image` or relative paths (e.g., `/image.png`).
+
+### Admin Panel Note
+- Due to static export limitations on Cloudflare/GitHub Pages, the Admin "Edit Article" route has been refactored.
+- Instead of `/admin/articles/[id]`, it now uses query parameters: `/admin/articles/edit?id=[id]`.
+- The dynamic route file `[id]/page.tsx` is kept as a placeholder to prevent build errors but is not used.
