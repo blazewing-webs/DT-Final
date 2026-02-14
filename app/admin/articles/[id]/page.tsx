@@ -1,12 +1,7 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-
-export default function ArticlePage() {
-    // Your full client component code from before
-    const params = useParams();
-    // ... rest of client code
+export function generateStaticParams() {
+    return [];
 }
 
-// NO generateStaticParams at all
+export default function ArticlePage() {
+    return null;
+}
