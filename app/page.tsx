@@ -1,5 +1,5 @@
 import FeaturedGrid from "@/components/news/FeaturedGrid";
-import { useArticles } from "@/hooks/useArticles";
+
 import CategoryFeed from "@/components/news/CategoryFeed"; // Added
 import CategorySection from "@/components/news/CategorySection";
 import NewsCard from "@/components/news/NewsCard";
@@ -22,16 +22,7 @@ import JoinCTA, { Disclaimer } from "@/components/home/JoinCTA";
 
 import Footer from "@/components/layout/Footer";
 
-// Wrapper to fetch sidebar data
-function SidebarWrapper() {
-    // Fetch 5 latest articles for sidebar, no specific category
-    // We could filter by priority="Featured (Medium)" if we wanted specific ones
-    const { articles: sidebarArticles, loading } = useArticles(undefined, 5);
-
-    if (loading) return <div className="p-4 bg-neutral-50 rounded-lg animate-pulse h-64"></div>;
-
-    return <Sidebar title="புதிய செய்திகள் (Latest News)" articles={sidebarArticles} />;
-}
+import SidebarWrapper from "@/components/news/SidebarWrapper";
 
 export default function Home() {
     return (

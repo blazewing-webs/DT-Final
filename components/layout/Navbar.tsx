@@ -57,34 +57,34 @@ export default function Navbar() {
                     </button>
                 </div>
             </div>
-        </div>
 
-            {/* Mobile Menu */ }
-    {
-        isOpen && (
-            <div className="lg:hidden border-t border-neutral-200 bg-white fixed inset-x-0 bottom-0 top-12 z-40 overflow-y-auto">
-                <div className="container mx-auto px-4 py-6 flex flex-col gap-2">
-                    <Link
-                        href="/"
-                        className="py-3 border-b border-neutral-100"
-                        onClick={() => setIsOpen(false)}
-                    >
-                        <img src="/logo.jpeg" alt="Dravida Thalaimurai" className="h-8 w-auto object-contain" />
-                    </Link>
-                    {navLinks.slice(1).map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className="text-lg font-bold text-neutral-800 py-3 border-b border-neutral-100 hover:text-dravida-red hover:pl-2 transition-all"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
-                </div>
-            </div>
-        )
-    }
+
+            {/* Mobile Menu */}
+            {
+                isOpen && (
+                    <div className="lg:hidden border-t border-neutral-200 bg-white fixed inset-x-0 bottom-0 top-12 z-40 overflow-y-auto">
+                        <div className="container mx-auto px-4 py-6 flex flex-col gap-2">
+                            <Link
+                                href="/"
+                                className="py-3 border-b border-neutral-100"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                <img src="/logo.jpeg" alt="Dravida Thalaimurai" className="h-8 w-auto object-contain" />
+                            </Link>
+                            {navLinks.slice(1).map((link) => (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className="text-lg font-bold text-neutral-800 py-3 border-b border-neutral-100 hover:text-dravida-red hover:pl-2 transition-all"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                )
+            }
         </nav >
     );
 }
