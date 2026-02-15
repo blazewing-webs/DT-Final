@@ -40,17 +40,17 @@ export default function FeaturedGrid({ quote, quoteAuthor }: FeaturedGridProps) 
     const gridItems = articles.slice(0, 7);
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-auto lg:h-[85vh] min-h-[600px] mb-12">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 h-auto lg:h-[85vh] min-h-[600px] mb-12">
 
             {/* Bento Grid Section (Left - 9 Cols) */}
-            <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-rows-3 gap-2 h-full">
+            <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-rows-[200px] lg:grid-rows-3 gap-2 h-auto lg:h-full">
                 {gridItems.map((article, index) => {
                     let gridClass = "";
                     let cardSize: "sm" | "md" | "lg" = "sm";
 
                     // Define grid spans and size based on index
-                    // Priority override: if article has 'Breaking' priority, try to put it in first slot if possible
-                    // For now, simpler logic: Position based.
+                    // Mobile: Default to span 1.
+                    // MD/LG: Apply complex spans.
 
                     switch (index) {
                         case 0:
@@ -100,7 +100,7 @@ export default function FeaturedGrid({ quote, quoteAuthor }: FeaturedGridProps) 
             </div>
 
             {/* Daily Quote Section (Right - 3 Cols) */}
-            <div className="lg:col-span-3 h-full">
+            <div className="lg:col-span-3 h-[400px] lg:h-full">
                 <div className="h-full rounded-xl overflow-hidden">
                     <DailyQuote
                         quote={quote}
