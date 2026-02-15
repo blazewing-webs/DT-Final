@@ -94,6 +94,10 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+            {/* Static Content Sections */}
+            <TimelineSection />
+            <FAQSection />
+
             <Footer />
         </main>
     );
