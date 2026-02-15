@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Clock, User } from "lucide-react";
-
+import { Clock, User, ImageOff } from "lucide-react"; // Added ImageOff
+import { useState, useEffect } from "react";
 
 // Temporary utility if not present
 function classNames(...classes: (string | undefined | null | false)[]) {
@@ -38,6 +38,15 @@ export default function NewsCard({
     const isCompact = variant === "compact";
     const isSidebar = variant === "sidebar";
 
+    // State to handle image errors
+    const [imgError, setImgError] = useState(false);
+    const [imgSrc, setImgSrc] = useState(image);
+
+    useEffect(() => {
+        setImgSrc(image);
+        setImgError(false);
+    }, [image]);
+
     // Dynamic Title Sizes based on `size` prop
     const titleSizeClass = {
         sm: "text-xs md:text-sm leading-tight",
@@ -52,18 +61,41 @@ export default function NewsCard({
     }[size];
 
     // Helper to get Tamil category mainly
-    const displayCategory = category.split('(')[0].trim();
+    const displayCategory = category ? category.split('(')[0].trim() : "News";
+
+    // Reusable Image Component with Fallback
+    const CardImage = () => {
+        if (imgError || !imgSrc) {
+            return (
+                <div className="w-full h-full bg-neutral-200 flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-2 text-neutral-400">
+                        <ImageOff className="w-8 h-8" />
+                        {/* Only show label on larger cards */}
+                        {(size === "md" || size === "lg") && !isHorizontal && !isSidebar && (
+                            <span className="text-xs font-medium uppercase tracking-wider">No Image</span>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <Image
+                src={imgSrc}
+                alt={title}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                onError={() => setImgError(true)}
+                unoptimized // Ensure we don't use Next.js optimization for external images which might be blocked
+            />
+        );
+    };
 
     if (isOverlay) {
         return (
             <Link href={href} className={classNames("group relative block overflow-hidden", className)}>
-                <div className="relative h-full w-full">
-                    <Image
-                        src={image}
-                        alt={title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                <div className="relative h-full w-full bg-neutral-900">
+                    <CardImage />
                     {/* Darker gradient for better text readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
                 </div>
@@ -89,15 +121,10 @@ export default function NewsCard({
     if (isHorizontal) {
         return (
             <Link href={href} className={classNames("group flex gap-4 items-start", className)}>
-                <div className="relative h-20 w-28 md:h-24 md:w-32 flex-shrink-0 overflow-hidden">
-                    <Image
-                        src={image}
-                        alt={title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                <div className="relative h-20 w-28 md:h-24 md:w-32 flex-shrink-0 overflow-hidden bg-neutral-100 rounded-md">
+                    <CardImage />
                     {/* Small category badge on image for horizontal cards in magazine style */}
-                    <div className="absolute bottom-0 left-0 bg-dravida-red text-white text-[10px] font-bold px-1.5 py-0.5 uppercase">
+                    <div className="absolute bottom-0 left-0 bg-dravida-red text-white text-[10px] font-bold px-1.5 py-0.5 uppercase z-10">
                         {displayCategory}
                     </div>
                 </div>
@@ -130,20 +157,15 @@ export default function NewsCard({
                     </div>
                 </div>
             </Link>
-        )
+        );
     }
 
     // Standard (Vertical Card)
     return (
         <Link href={href} className={classNames("group block h-full flex flex-col", className)}>
-            <div className="relative aspect-[3/2] w-full overflow-hidden mb-3">
-                <Image
-                    src={image}
-                    alt={title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute bottom-0 left-0 bg-dravida-red px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+            <div className="relative aspect-[3/2] w-full overflow-hidden mb-3 bg-neutral-100 rounded-lg">
+                <CardImage />
+                <div className="absolute bottom-0 left-0 bg-dravida-red px-1.5 py-0.5 text-[10px] font-bold uppercase text-white z-10">
                     {displayCategory}
                 </div>
             </div>
