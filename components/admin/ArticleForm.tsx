@@ -3,8 +3,11 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Save, Upload, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
-const CATEGORIES = [
+// Fallback if DB is empty
+const DEFAULT_CATEGORIES = [
     { id: "politics", name: "அரசியல் (Politics)" },
     { id: "education", name: "கல்வி (Education)" },
     { id: "women", name: "பெண்கள் நலம் (Women)" },
@@ -35,10 +38,37 @@ export default function ArticleForm({ initialData, onSubmit, loading, buttonText
     const [title, setTitle] = useState(initialData?.title || "");
     const [excerpt, setExcerpt] = useState(initialData?.excerpt || "");
     const [content, setContent] = useState(initialData?.content || "");
-    const [category, setCategory] = useState(initialData?.category || CATEGORIES[0].name);
-    const [author, setAuthor] = useState(initialData?.author || "Admin");
+    const [category, setCategory] = useState(initialData?.category || "");
     const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || "");
     const [priority, setPriority] = useState(initialData?.priority || "Standard");
+
+    const [categories, setCategories] = useState<{ id: string, name: string }[]>(DEFAULT_CATEGORIES);
+
+    // Fetch Categories
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const q = query(collection(db, "categories"), orderBy("slug", "asc"));
+                const querySnapshot = await getDocs(q);
+                if (!querySnapshot.empty) {
+                    const fetchedCats = querySnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        name: doc.data().name as string
+                    }));
+                    setCategories(fetchedCats);
+
+                    // Set default category if not set and we have fetched ones
+                    if (!category && !initialData?.category) {
+                        setCategory(fetchedCats[0].name);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     useEffect(() => {
         if (initialData) {
@@ -46,18 +76,20 @@ export default function ArticleForm({ initialData, onSubmit, loading, buttonText
             setExcerpt(initialData.excerpt);
             setContent(initialData.content);
             setCategory(initialData.category);
-            setAuthor(initialData.author);
             setImageUrl(initialData.imageUrl);
             setPriority(initialData.priority);
+        } else if (!category && categories.length > 0) {
+            // Ensure default category is selected on new article
+            setCategory(categories[0].name);
         }
-    }, [initialData]);
+    }, [initialData, categories]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         await onSubmit({
             title,
-            category,
-            author,
+            category: category || categories[0]?.name || "Uncategorized", // Safety fallback
+            author: "Team", // Hardcoded as per request to remove field
             imageUrl,
             priority,
             excerpt,
@@ -98,23 +130,13 @@ export default function ArticleForm({ initialData, onSubmit, loading, buttonText
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
                         >
-                            {CATEGORIES.map(cat => (
+                            {categories.map(cat => (
                                 <option key={cat.id} value={cat.name}>{cat.name}</option>
                             ))}
                         </select>
                     </div>
 
-                    {/* Author */}
-                    <div>
-                        <label className="block text-sm font-bold text-neutral-700 mb-2">Author</label>
-                        <input
-                            type="text"
-                            className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red"
-                            placeholder="Reporter Name"
-                            value={author}
-                            onChange={(e) => setAuthor(e.target.value)}
-                        />
-                    </div>
+
                 </div>
 
                 {/* Priority Selection */}

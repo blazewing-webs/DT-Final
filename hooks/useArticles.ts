@@ -18,7 +18,7 @@ export interface Article {
     tags: string[];
 }
 
-export function useArticles(category?: string, articleLimit: number = 10) {
+export function useArticles(category?: string, articleLimit: number = 10, priority?: string) {
     const [articles, setArticles] = useState<Article[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,12 @@ export function useArticles(category?: string, articleLimit: number = 10) {
                     q = query(
                         collection(db, "articles"),
                         where("category", "==", category),
-                        orderBy("date", "desc"),
+                        limit(articleLimit)
+                    );
+                } else if (priority) {
+                    q = query(
+                        collection(db, "articles"),
+                        where("priority", "==", priority),
                         limit(articleLimit)
                     );
                 }
@@ -51,9 +56,18 @@ export function useArticles(category?: string, articleLimit: number = 10) {
                             ? new Date(docData.date.toDate()).toLocaleDateString("en-IN", {
                                 year: 'numeric', month: 'long', day: 'numeric'
                             })
-                            : "Just now"
+                            : "Just now",
+                        // Keep raw date for sorting if needed, but here we sort mapping
+                        rawDate: docData.date // We might need this for sorting
                     };
-                }) as Article[];
+                }) as any[];
+
+                // Client-side sort because we removed orderBy in category query
+                data.sort((a, b) => {
+                    const dateA = a.rawDate instanceof Timestamp ? a.rawDate.toMillis() : 0;
+                    const dateB = b.rawDate instanceof Timestamp ? b.rawDate.toMillis() : 0;
+                    return dateB - dateA;
+                });
 
                 setArticles(data);
             } catch (err: any) {
@@ -65,7 +79,7 @@ export function useArticles(category?: string, articleLimit: number = 10) {
         }
 
         fetchArticles();
-    }, [category, articleLimit]);
+    }, [category, articleLimit, priority]);
 
     return { articles, loading, error };
 }

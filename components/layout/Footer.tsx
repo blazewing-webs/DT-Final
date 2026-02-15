@@ -1,7 +1,29 @@
+"use client";
+
 import Link from "next/link";
 import { Facebook, Twitter, Instagram, Youtube, Mail, ArrowRight, MapPin, Phone } from "lucide-react";
+import { useState, useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function Footer() {
+    const [settings, setSettings] = useState<any>({});
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const docRef = doc(db, "settings", "general");
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setSettings(docSnap.data());
+                }
+            } catch (error) {
+                console.error("Error fetching settings:", error);
+            }
+        };
+        fetchSettings();
+    }, []);
+
     return (
         <footer className="bg-neutral-900 text-white font-sans border-t-4 border-dravida-red">
             {/* Newsletter Section */}
@@ -40,10 +62,10 @@ export default function Footer() {
                             சமூக நீதி, பகுத்தறிவு மற்றும் சுயமரியாதை கொள்கைகளை முன்னெடுக்கும் டிஜிட்டல் தளம். திராவிட இயக்கத்தின் வரலாற்றுப் பெருமைகளையும், நவீன காலத் தேவைகளையும் இணைக்கும் குரல்.
                         </p>
                         <div className="flex gap-4 pt-2">
-                            <SocialLink href="#" icon={<Facebook className="h-5 w-5" />} />
-                            <SocialLink href="#" icon={<Twitter className="h-5 w-5" />} />
-                            <SocialLink href="#" icon={<Instagram className="h-5 w-5" />} />
-                            <SocialLink href="#" icon={<Youtube className="h-5 w-5" />} />
+                            {settings.facebook && <SocialLink href={settings.facebook} icon={<Facebook className="h-5 w-5" />} />}
+                            {settings.twitter && <SocialLink href={settings.twitter} icon={<Twitter className="h-5 w-5" />} />}
+                            {settings.instagram && <SocialLink href={settings.instagram} icon={<Instagram className="h-5 w-5" />} />}
+                            {settings.youtube && <SocialLink href={settings.youtube} icon={<Youtube className="h-5 w-5" />} />}
                         </div>
                     </div>
 
@@ -87,19 +109,18 @@ export default function Footer() {
                             <li className="flex items-start gap-3">
                                 <MapPin className="h-5 w-5 text-dravida-red shrink-0 mt-1" />
                                 <span className="text-sm">
-                                    எண் 12, அண்ணா சாலை,<br />
-                                    தேனாம்பேட்டை, சென்னை - 600018.
+                                    {settings.address || "எண் 12, அண்ணா சாலை, தேனாம்பேட்டை, சென்னை - 600018."}
                                 </span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="h-5 w-5 text-dravida-red shrink-0" />
-                                <a href="mailto:contact@dravida.in" className="text-sm hover:text-white transition-colors">
-                                    contact@dravida.in
+                                <a href={`mailto:${settings.email || "contact@dravida.in"}`} className="text-sm hover:text-white transition-colors">
+                                    {settings.email || "contact@dravida.in"}
                                 </a>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="h-5 w-5 text-dravida-red shrink-0" />
-                                <span className="text-sm">+91 44 2432 XXXX</span>
+                                <span className="text-sm">{settings.phone || "+91 44 2432 XXXX"}</span>
                             </li>
                         </ul>
                     </div>
@@ -128,6 +149,8 @@ function SocialLink({ href, icon }: { href: string; icon: React.ReactNode }) {
     return (
         <a
             href={href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="h-10 w-10 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 hover:bg-dravida-red hover:text-white transition-all duration-300"
         >
             {icon}

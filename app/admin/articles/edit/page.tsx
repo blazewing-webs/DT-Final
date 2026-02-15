@@ -60,8 +60,20 @@ function EditArticleContent() {
         setLoading(true);
         try {
             const docRef = doc(db, "articles", id);
+            // Generate slug from title if it doesn't exist or if title changed (optional, but good for consistency)
+            // For now, let's just ensure we have a slug if it's missing, or update it to match new title
+            const slug = data.title
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+
+            const finalSlug = slug || `article-${Date.now()}`;
+
             await updateDoc(docRef, {
                 title: data.title,
+                slug: finalSlug, // Update slug
                 excerpt: data.excerpt,
                 content: data.content,
                 category: data.category,

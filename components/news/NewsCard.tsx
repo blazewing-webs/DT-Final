@@ -51,6 +51,9 @@ export default function NewsCard({
         lg: "p-5 md:p-6",
     }[size];
 
+    // Helper to get Tamil category mainly
+    const displayCategory = category.split('(')[0].trim();
+
     if (isOverlay) {
         return (
             <Link href={href} className={classNames("group relative block overflow-hidden", className)}>
@@ -65,20 +68,14 @@ export default function NewsCard({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
                 </div>
                 <div className={`absolute bottom-0 left-0 ${paddingClass} text-white w-full`}>
-                    <span className="mb-2 inline-block bg-dravida-red px-2 py-0.5 text-[10px] md:text-xs font-bold uppercase tracking-wider text-white">
-                        {category}
+                    <span className="mb-2 inline-block bg-dravida-red px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                        {displayCategory}
                     </span>
                     <h3 className={`mb-2 font-bold drop-shadow-md ${titleSizeClass}`}>
                         {title}
                     </h3>
 
                     <div className="flex items-center gap-3 text-xs text-gray-300 font-medium opacity-90">
-                        {author && (
-                            <div className="flex items-center gap-1">
-                                <User className="h-3 w-3" />
-                                <span>{author}</span>
-                            </div>
-                        )}
                         <div className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             <span>{date}</span>
@@ -101,7 +98,7 @@ export default function NewsCard({
                     />
                     {/* Small category badge on image for horizontal cards in magazine style */}
                     <div className="absolute bottom-0 left-0 bg-dravida-red text-white text-[10px] font-bold px-1.5 py-0.5 uppercase">
-                        {category}
+                        {displayCategory}
                     </div>
                 </div>
                 <div className="flex flex-col">
@@ -109,8 +106,6 @@ export default function NewsCard({
                         {title}
                     </h3>
                     <div className="flex items-center gap-2 text-[10px] md:text-xs text-neutral-400 uppercase tracking-wide">
-                        {author && <span>{author}</span>}
-                        {author && <span>•</span>}
                         <div className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             <span>{date}</span>
@@ -129,7 +124,7 @@ export default function NewsCard({
                         {title}
                     </h3>
                     <div className="mt-1 flex gap-2 text-[10px] text-neutral-400 uppercase">
-                        <span className="text-dravida-red font-bold">{category}</span>
+                        <span className="text-dravida-red font-bold">{displayCategory}</span>
                         <span>•</span>
                         <span>{date}</span>
                     </div>
@@ -148,8 +143,8 @@ export default function NewsCard({
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute bottom-0 left-0 bg-dravida-red px-2 py-1 text-xs font-bold uppercase text-white">
-                    {category}
+                <div className="absolute bottom-0 left-0 bg-dravida-red px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+                    {displayCategory}
                 </div>
             </div>
             <div className="flex flex-1 flex-col">
@@ -166,15 +161,6 @@ export default function NewsCard({
                         <Clock className="h-3 w-3" />
                         <span>{date}</span>
                     </div>
-                    {author && (
-                        <>
-                            <span>•</span>
-                            <div className="flex items-center gap-1">
-                                <User className="h-3 w-3" />
-                                <span>{author}</span>
-                            </div>
-                        </>
-                    )}
                 </div>
             </div>
         </Link>

@@ -13,8 +13,20 @@ export default function NewArticlePage() {
     const handleSubmit = async (data: ArticleData) => {
         setLoading(true);
         try {
+            // Generate slug from title
+            const slug = data.title
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '') // Remove non-word chars (except spaces & dashes)
+                .replace(/[\s_-]+/g, '-') // Replace spaces/underscores with dashes
+                .replace(/^-+|-+$/g, ''); // Trim dashes
+
+            // Fallback for non-ASCII titles (e.g. Tamil only)
+            const finalSlug = slug || `article-${Date.now()}`;
+
             await addDoc(collection(db, "articles"), {
                 ...data,
+                slug: finalSlug,
                 date: Timestamp.now(),
                 image: data.imageUrl // Ensure field matches Firestore schema
             });

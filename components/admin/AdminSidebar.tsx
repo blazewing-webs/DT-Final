@@ -2,13 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FileText, Users, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, FileText, Users, Settings, LogOut, Database, BookOpen, Clock, Book, CheckCircle, Quote } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 
 const navItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Articles", href: "/admin/articles", icon: FileText },
+    { name: "Categories", href: "/admin/categories", icon: Database },
+    { name: "Magazines", href: "/admin/magazines", icon: BookOpen },
+    { name: "Timeline", href: "/admin/timeline", icon: Clock },
+    { name: "Books", href: "/admin/books", icon: Book },
+    { name: "Fact Check", href: "/admin/fact-check", icon: CheckCircle },
+    { name: "Youth Desk", href: "/admin/youth-desk", icon: Users },
+    { name: "Quotes", href: "/admin/quotes", icon: Quote },
     { name: "Users", href: "/admin/users", icon: Users },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];

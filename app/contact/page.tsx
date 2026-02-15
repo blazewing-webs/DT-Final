@@ -1,9 +1,42 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Loader2 } from "lucide-react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function ContactPage() {
+    const [settings, setSettings] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const docRef = doc(db, "settings", "general");
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setSettings(docSnap.data());
+                } else {
+                    // Fallback defaults if no settings found
+                    setSettings({
+                        email: "contact@dravidathalaimurai.com",
+                        phone: "+91 98765 43210",
+                        address: "Chennai, Tamil Nadu, India"
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching settings:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSettings();
+    }, []);
+
     return (
         <main className="min-h-screen bg-neutral-50">
             <Navbar />
@@ -24,26 +57,37 @@ export default function ContactPage() {
                                 We are here to listen. Whether you have a question about our articles, want to contribute, or just want to say hello.
                             </p>
                         </div>
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-4 text-neutral-600">
-                                <div className="w-10 h-10 bg-dravida-red/10 flex items-center justify-center rounded-full text-dravida-red">
-                                    <Mail className="h-5 w-5" />
-                                </div>
-                                <span>contact@dravidathalaimurai.com</span>
+
+                        {loading ? (
+                            <div className="flex items-center gap-2 text-neutral-400">
+                                <Loader2 className="h-5 w-5 animate-spin" /> Loading contact info...
                             </div>
-                            <div className="flex items-center gap-4 text-neutral-600">
-                                <div className="w-10 h-10 bg-dravida-red/10 flex items-center justify-center rounded-full text-dravida-red">
-                                    <Phone className="h-5 w-5" />
+                        ) : (
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-4 text-neutral-600">
+                                    <div className="w-10 h-10 bg-dravida-red/10 flex items-center justify-center rounded-full text-dravida-red">
+                                        <Mail className="h-5 w-5" />
+                                    </div>
+                                    <a href={`mailto:${settings?.email}`} className="hover:text-dravida-red transition-colors">
+                                        {settings?.email || "Email not available"}
+                                    </a>
                                 </div>
-                                <span>+91 98765 43210</span>
-                            </div>
-                            <div className="flex items-center gap-4 text-neutral-600">
-                                <div className="w-10 h-10 bg-dravida-red/10 flex items-center justify-center rounded-full text-dravida-red">
-                                    <MapPin className="h-5 w-5" />
+                                <div className="flex items-center gap-4 text-neutral-600">
+                                    <div className="w-10 h-10 bg-dravida-red/10 flex items-center justify-center rounded-full text-dravida-red">
+                                        <Phone className="h-5 w-5" />
+                                    </div>
+                                    <a href={`tel:${settings?.phone}`} className="hover:text-dravida-red transition-colors">
+                                        {settings?.phone || "Phone not available"}
+                                    </a>
                                 </div>
-                                <span>Chennai, Tamil Nadu, India</span>
+                                <div className="flex items-center gap-4 text-neutral-600">
+                                    <div className="w-10 h-10 bg-dravida-red/10 flex items-center justify-center rounded-full text-dravida-red">
+                                        <MapPin className="h-5 w-5" />
+                                    </div>
+                                    <span>{settings?.address || "Address not available"}</span>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     {/* Contact Form */}

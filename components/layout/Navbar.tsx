@@ -50,47 +50,41 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    {/* Flash News Ticker (Right Side Integration) */}
-                    <div className="flex-1 lg:flex-none flex items-center justify-end gap-4 ml-4">
-                        <div className="hidden md:flex items-center gap-2 bg-neutral-100 px-3 py-1.5 rounded-full border border-neutral-200">
-                            <Zap className="h-3 w-3 text-dravida-red fill-current" />
-                            <span className="text-xs font-bold text-neutral-700 uppercase">செய்திகள்:</span>
-                            <span className="text-xs text-neutral-600 truncate max-w-[200px]">
-                                புதிய கல்விக் கொள்கை விவாதம்...
-                            </span>
-                        </div>
+                    {/* Flash News Ticker (Right Side Integration) - Removed static ticker */}
 
-                        <button aria-label="Search" className="text-neutral-500 hover:text-dravida-red transition-colors border-l border-neutral-200 pl-4">
-                            <Search className="h-4 w-4" />
-                        </button>
-                    </div>
+                    <button aria-label="Search" className="text-neutral-500 hover:text-dravida-red transition-colors border-l border-neutral-200 pl-4">
+                        <Search className="h-4 w-4" />
+                    </button>
                 </div>
             </div>
+        </div>
 
-            {/* Mobile Menu */}
-            {isOpen && (
-                <div className="lg:hidden border-t border-neutral-200 bg-white fixed inset-x-0 bottom-0 top-12 z-40 overflow-y-auto">
-                    <div className="container mx-auto px-4 py-6 flex flex-col gap-2">
+            {/* Mobile Menu */ }
+    {
+        isOpen && (
+            <div className="lg:hidden border-t border-neutral-200 bg-white fixed inset-x-0 bottom-0 top-12 z-40 overflow-y-auto">
+                <div className="container mx-auto px-4 py-6 flex flex-col gap-2">
+                    <Link
+                        href="/"
+                        className="py-3 border-b border-neutral-100"
+                        onClick={() => setIsOpen(false)}
+                    >
+                        <img src="/logo.jpeg" alt="Dravida Thalaimurai" className="h-8 w-auto object-contain" />
+                    </Link>
+                    {navLinks.slice(1).map((link) => (
                         <Link
-                            href="/"
-                            className="py-3 border-b border-neutral-100"
+                            key={link.href}
+                            href={link.href}
+                            className="text-lg font-bold text-neutral-800 py-3 border-b border-neutral-100 hover:text-dravida-red hover:pl-2 transition-all"
                             onClick={() => setIsOpen(false)}
                         >
-                            <img src="/logo.jpeg" alt="Dravida Thalaimurai" className="h-8 w-auto object-contain" />
+                            {link.name}
                         </Link>
-                        {navLinks.slice(1).map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="text-lg font-bold text-neutral-800 py-3 border-b border-neutral-100 hover:text-dravida-red hover:pl-2 transition-all"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-                    </div>
+                    ))}
                 </div>
-            )}
-        </nav>
+            </div>
+        )
+    }
+        </nav >
     );
 }

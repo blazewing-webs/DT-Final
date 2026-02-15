@@ -1,3 +1,5 @@
+"use client";
+
 import PageHeader from "@/components/shared/PageHeader";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
