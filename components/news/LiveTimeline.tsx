@@ -42,7 +42,7 @@ export default function LiveTimeline() {
 
     if (loading) return <div className="animate-pulse bg-neutral-100 h-64 rounded-xl"></div>;
 
-    if (items.length === 0) return null; // Don't show if empty
+
 
     return (
         <RecursiveTimeline

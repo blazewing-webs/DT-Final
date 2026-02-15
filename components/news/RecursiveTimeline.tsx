@@ -82,9 +82,15 @@ export default function RecursiveTimeline({ title, items, className }: Recursive
             {/* Timeline Body */}
             <div className="p-4">
                 <div className="relative">
-                    {items.map((item) => (
-                        <TimelineNode key={item.id} item={item} />
-                    ))}
+                    {items.length === 0 ? (
+                        <div className="text-center py-8 text-neutral-400 text-sm italic">
+                            No live updates at the moment.
+                        </div>
+                    ) : (
+                        items.map((item) => (
+                            <TimelineNode key={item.id} item={item} />
+                        ))
+                    )}
                 </div>
             </div>
 
