@@ -33,6 +33,10 @@ export default function Home() {
 
             <div className="container mx-auto px-4 md:px-6 py-8">
                 {/* Featured Section (Bento Grid - Needs 7 items) */}
+                <div className="flex items-center gap-2 mb-6">
+                    <div className="w-1 h-8 bg-dravida-red rounded-full"></div>
+                    <h2 className="text-2xl font-bold text-neutral-800">செய்திகள் (Latest News)</h2>
+                </div>
                 <FeaturedGrid
                     quote="மலைகளின் அரசியே, நீலகிரியே! உன் வளம் காப்போம், உன் நலம் காப்போம்."
                     quoteAuthor="குன்னூர் நிருபர்"

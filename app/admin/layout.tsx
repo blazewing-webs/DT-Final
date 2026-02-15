@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/components/admin/AuthContext"; // Ensure AuthContext is exported correctly
+import { useAuth } from "@/components/admin/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import { Menu } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     useEffect(() => {
         if (!loading && !user && pathname !== "/admin/login") {
@@ -28,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const isLoginPage = pathname === "/admin/login";
 
     if (!user && !isLoginPage) {
-        return null; // or a loading spinner while redirecting
+        return null;
     }
 
     if (isLoginPage) {
@@ -36,9 +38,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
 
     return (
-        <div className="min-h-screen bg-neutral-100 flex font-sans">
-            <AdminSidebar />
-            <main className="flex-1 ml-64 p-8">
+        <div className="min-h-screen bg-neutral-100 flex flex-col lg:flex-row font-sans">
+            {/* Mobile Header */}
+            <div className="lg:hidden bg-white border-b border-neutral-200 p-4 flex items-center justify-between sticky top-0 z-30">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-dravida-red rounded-full"></div>
+                    <span className="font-bold text-lg tracking-wide text-neutral-900">DT Admin</span>
+                </div>
+                <button
+                    onClick={() => setSidebarOpen(true)}
+                    className="p-2 text-neutral-600 hover:bg-neutral-100 rounded-lg"
+                >
+                    <Menu className="w-6 h-6" />
+                </button>
+            </div>
+
+            <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+            <main className="flex-1 lg:ml-64 p-4 lg:p-8 overflow-x-hidden">
                 {children}
             </main>
         </div>

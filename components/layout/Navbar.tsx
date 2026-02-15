@@ -11,6 +11,9 @@ const navLinks = [
     { name: "சமூகம்", href: "/society" }, // Society
     { name: "பெண்கள்", href: "/women" }, // Women
     { name: "கல்வி", href: "/education" }, // Education
+    { name: "இதழ்கள்", href: "/magazine" }, // Magazine
+    { name: "குழு", href: "/team" }, // Team
+    { name: "இளைஞர் அணி", href: "/youth-desk" }, // Youth Desk
     { name: "தொடர்புக்கு", href: "/contact" }, // Contact
 ];
 
