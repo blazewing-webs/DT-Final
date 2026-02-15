@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FileText, Users, Settings, LogOut, Database, BookOpen, Clock, Book, CheckCircle, Quote, HelpCircle } from "lucide-react";
+import { LayoutDashboard, FileText, Users, Settings, LogOut, Database, BookOpen, Clock, Book, CheckCircle, Quote, HelpCircle, Youtube } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 
@@ -18,6 +18,7 @@ const navItems = [
     { name: "Youth Desk", href: "/admin/youth-desk", icon: Users },
     { name: "Quotes", href: "/admin/quotes", icon: Quote },
     { name: "FAQs", href: "/admin/faqs", icon: HelpCircle },
+    { name: "YouTube", href: "/admin/youtube", icon: Youtube },
     { name: "Users", href: "/admin/users", icon: Users },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];

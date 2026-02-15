@@ -3,12 +3,39 @@
 import { useState } from "react";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Loader2, CheckCircle, AlertCircle, Clock } from "lucide-react";
+import { Loader2, CheckCircle, AlertCircle, Clock, Book } from "lucide-react";
 
 // Helper to create date objects
 const createDate = (year: number, month: number, day: number, hour: number = 10) => {
     return new Date(year, month - 1, day, hour);
 };
+
+const HISTORY_DATA = [
+    {
+        time: "1925",
+        title: "சுயமரியாதை இயக்கம்",
+        description: "தந்தை பெரியாரால் தோற்றுவிக்கப்பட்டது.",
+        date: createDate(1925, 1, 1, 10)
+    },
+    {
+        time: "1949",
+        title: "திராவிட முன்னேற்றக் கழகம்",
+        description: "பேரறிஞர் அண்ணாவால் துவக்கம்.",
+        date: createDate(1949, 9, 17, 10)
+    },
+    {
+        time: "1967",
+        title: "சமூக நீதிக்கு அரசியல் வெற்றி",
+        description: "மாநிலத்தில் ஆட்சி மாற்றம், சமூக நீதி நிலைநாட்டப்பட்டது.",
+        date: createDate(1967, 3, 6, 10)
+    },
+    {
+        time: "2000+",
+        title: "இளம் தலைமுறை விழிப்புணர்வு",
+        description: "இணையம் வழி திராவிடக் கொள்கை பரவல்.",
+        date: createDate(2000, 1, 1, 10)
+    }
+];
 
 const SAMPLE_TIMELINE_DATA = [
     // 2025-2026 (Recent/Future)
@@ -104,21 +131,21 @@ export default function TimelineSeedPage() {
     const [status, setStatus] = useState<"idle" | "seeding" | "success" | "error">("idle");
     const [log, setLog] = useState<string[]>([]);
 
-    const seedTimeline = async () => {
-        if (!confirm("This will add sample timeline data. Continue?")) return;
+    const seedTimeline = async (dataSet: typeof SAMPLE_TIMELINE_DATA) => {
+        if (!confirm(`This will add ${dataSet.length} timeline events. Continue?`)) return;
 
         setStatus("seeding");
         setLog([]);
 
         try {
-            for (const item of SAMPLE_TIMELINE_DATA) {
+            for (const item of dataSet) {
                 setLog(prev => [...prev, `Creating: ${item.title}...`]);
 
                 await addDoc(collection(db, "timelines"), {
                     time: item.time,
                     title: item.title,
                     description: item.description,
-                    createdAt: Timestamp.fromDate(item.date) // Use historical dates
+                    createdAt: Timestamp.fromDate(item.date)
                 });
 
                 setLog(prev => [...prev, `✅ Created: ${item.title}`]);
@@ -144,15 +171,25 @@ export default function TimelineSeedPage() {
                     </p>
                 </div>
 
-                <div className="flex gap-4 mb-8">
+                <div className="flex flex-wrap gap-4 mb-8">
                     <button
-                        onClick={seedTimeline}
+                        onClick={() => seedTimeline(SAMPLE_TIMELINE_DATA)}
                         disabled={status === "seeding" || status === "success"}
                         className="px-6 py-3 bg-neutral-900 text-white font-bold rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 flex items-center gap-2"
                     >
                         {status === "seeding" && <Loader2 className="w-4 h-4 animate-spin" />}
                         {status === "success" && <CheckCircle className="w-4 h-4" />}
-                        {status === "idle" ? "Seed Timeline Data" : status === "seeding" ? "Seeding..." : "Seeding Complete"}
+                        {status === "idle" ? "Seed Recent Updates" : status === "seeding" ? "Seeding..." : "Seeding Complete"}
+                    </button>
+
+                    <button
+                        onClick={() => seedTimeline(HISTORY_DATA)}
+                        disabled={status === "seeding" || status === "success"}
+                        className="px-6 py-3 bg-dravida-red text-white font-bold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+                    >
+                        {status === "seeding" && <Loader2 className="w-4 h-4 animate-spin" />}
+                        <Book className="w-4 h-4" />
+                        Seed Historical Data
                     </button>
 
                     <a href="/" className="px-6 py-3 border border-neutral-300 rounded-lg hover:bg-neutral-50 flex items-center justify-center">

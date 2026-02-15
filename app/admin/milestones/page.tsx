@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, query, orderBy, getDocs, deleteDoc, doc, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, orderBy, getDocs, deleteDoc, doc, addDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Trash2, Plus, Loader2, Save } from "lucide-react";
+import { Trash2, Plus, Loader2, Save, Edit } from "lucide-react";
+import Modal from "@/components/ui/Modal";
 import { useAuth } from "@/components/admin/AuthContext";
 
 interface Milestone {
@@ -25,17 +26,19 @@ export default function MilestonesManagement() {
     const { user, loading: authLoading } = useAuth();
     const [items, setItems] = useState<Milestone[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isAdding, setIsAdding] = useState(false);
 
-    // Form inputs
-    const [year, setYear] = useState("");
-    const [title, setTitle] = useState("");
-    const [desc, setDesc] = useState("");
+    // Modal & Form State
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingItem, setEditingItem] = useState<Milestone | null>(null);
+    const [formData, setFormData] = useState({
+        year: "",
+        title: "",
+        desc: ""
+    });
 
     const fetchItems = async () => {
         setLoading(true);
         try {
-            // Sort by year string (simple alphanumeric sort) or createdAt
             const q = query(collection(db, "milestones"), orderBy("year", "asc"));
             const querySnapshot = await getDocs(q);
             const data = querySnapshot.docs.map(doc => ({
@@ -54,22 +57,28 @@ export default function MilestonesManagement() {
         if (user) fetchItems();
     }, [user]);
 
-    const handleAdd = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            await addDoc(collection(db, "milestones"), {
-                year,
-                title,
-                desc,
-                createdAt: serverTimestamp()
+    const handleOpenModal = (item?: Milestone) => {
+        if (item) {
+            setEditingItem(item);
+            setFormData({
+                year: item.year,
+                title: item.title,
+                desc: item.desc
             });
-            setIsAdding(false);
-            resetForm();
-            fetchItems();
-        } catch (error) {
-            console.error("Error adding milestone:", error);
-            alert("Failed to add milestone");
+        } else {
+            setEditingItem(null);
+            setFormData({
+                year: "",
+                title: "",
+                desc: ""
+            });
         }
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setEditingItem(null);
     };
 
     const handleDelete = async (id: string) => {
@@ -79,6 +88,33 @@ export default function MilestonesManagement() {
             setItems(items.filter(item => item.id !== id));
         } catch (error) {
             console.error("Error deleting milestone:", error);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (editingItem) {
+                // Update existing
+                await updateDoc(doc(db, "milestones", editingItem.id), {
+                    year: formData.year,
+                    title: formData.title,
+                    desc: formData.desc
+                });
+            } else {
+                // Create new
+                await addDoc(collection(db, "milestones"), {
+                    year: formData.year,
+                    title: formData.title,
+                    desc: formData.desc,
+                    createdAt: serverTimestamp()
+                });
+            }
+            handleCloseModal();
+            fetchItems();
+        } catch (error) {
+            console.error("Error saving milestone:", error);
+            alert("Failed to save milestone");
         }
     };
 
@@ -99,12 +135,6 @@ export default function MilestonesManagement() {
         }
     };
 
-    const resetForm = () => {
-        setYear("");
-        setTitle("");
-        setDesc("");
-    };
-
     if (authLoading) return null;
 
     return (
@@ -122,59 +152,70 @@ export default function MilestonesManagement() {
                         Seed Defaults
                     </button>
                     <button
-                        onClick={() => setIsAdding(!isAdding)}
+                        onClick={() => handleOpenModal()}
                         className="bg-neutral-900 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-neutral-800 transition-colors"
                     >
                         <Plus className="w-4 h-4" />
-                        {isAdding ? "Cancel" : "Add Milestone"}
+                        Add Milestone
                     </button>
                 </div>
             </div>
 
-            {isAdding && (
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-neutral-200 mb-8 animate-in fade-in">
-                    <h2 className="font-bold text-lg mb-4">New Milestone</h2>
-                    <form onSubmit={handleAdd} className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-neutral-700 mb-1">Year</label>
-                                <input
-                                    value={year}
-                                    onChange={e => setYear(e.target.value)}
-                                    className="w-full p-2 border rounded-lg"
-                                    placeholder="e.g. 1967"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-neutral-700 mb-1">Title</label>
-                                <input
-                                    value={title}
-                                    onChange={e => setTitle(e.target.value)}
-                                    className="w-full p-2 border rounded-lg"
-                                    placeholder="Event Title"
-                                    required
-                                />
-                            </div>
-                        </div>
+            <Modal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                title={editingItem ? "Edit Milestone" : "New Milestone"}
+            >
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-neutral-700 mb-1">Description</label>
-                            <textarea
-                                value={desc}
-                                onChange={e => setDesc(e.target.value)}
-                                className="w-full p-2 border rounded-lg h-24"
-                                placeholder="Short description..."
+                            <label className="block text-sm font-medium text-neutral-700 mb-1">Year</label>
+                            <input
+                                value={formData.year}
+                                onChange={e => setFormData({ ...formData, year: e.target.value })}
+                                className="w-full p-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900"
+                                placeholder="e.g. 1967"
                                 required
                             />
                         </div>
-                        <div className="flex justify-end">
-                            <button type="submit" className="bg-dravida-red text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700">
-                                Save Milestone
-                            </button>
+                        <div>
+                            <label className="block text-sm font-medium text-neutral-700 mb-1">Title</label>
+                            <input
+                                value={formData.title}
+                                onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                className="w-full p-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900"
+                                placeholder="Event Title"
+                                required
+                            />
                         </div>
-                    </form>
-                </div>
-            )}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Description</label>
+                        <textarea
+                            value={formData.desc}
+                            onChange={e => setFormData({ ...formData, desc: e.target.value })}
+                            className="w-full p-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 h-24"
+                            placeholder="Short description..."
+                            required
+                        />
+                    </div>
+                    <div className="flex justify-end pt-4">
+                        <button
+                            type="button"
+                            onClick={handleCloseModal}
+                            className="mr-2 px-4 py-2 text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="bg-dravida-red text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition-colors"
+                        >
+                            {editingItem ? "Save Changes" : "Save Milestone"}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
 
             {loading ? (
                 <div className="flex justify-center py-12">
@@ -190,8 +231,8 @@ export default function MilestonesManagement() {
             ) : (
                 <div className="space-y-4">
                     {items.map((item) => (
-                        <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-neutral-200 flex justify-between items-start">
-                            <div className="flex gap-4">
+                        <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-neutral-200 flex flex-col md:flex-row gap-4 items-start md:items-center group">
+                            <div className="flex gap-4 flex-1">
                                 <div className="text-2xl font-bold text-neutral-200 w-24 text-center select-none">
                                     {item.year}
                                 </div>
@@ -200,13 +241,22 @@ export default function MilestonesManagement() {
                                     <p className="text-neutral-600">{item.desc}</p>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => handleDelete(item.id)}
-                                className="text-neutral-400 hover:text-red-600 p-2"
-                                title="Delete"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </button>
+                            <div className="flex items-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                <button
+                                    onClick={() => handleOpenModal(item)}
+                                    className="p-2 text-neutral-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                    title="Edit"
+                                >
+                                    <Edit className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(item.id)}
+                                    className="p-2 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                    title="Delete"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>

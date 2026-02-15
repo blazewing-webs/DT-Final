@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, query, orderBy, getDocs, deleteDoc, doc, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, orderBy, getDocs, deleteDoc, doc, addDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Trash2, Plus, Loader2, HelpCircle } from "lucide-react";
+import { Trash2, Plus, Loader2, HelpCircle, Edit } from "lucide-react";
+import Modal from "@/components/ui/Modal";
 import { useAuth } from "@/components/admin/AuthContext";
 
 interface FAQ {
@@ -60,11 +61,14 @@ export default function FAQManagement() {
     const { user, loading: authLoading } = useAuth();
     const [items, setItems] = useState<FAQ[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isAdding, setIsAdding] = useState(false);
 
-    // Form inputs
-    const [question, setQuestion] = useState("");
-    const [answer, setAnswer] = useState("");
+    // Modal & Form State
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingItem, setEditingItem] = useState<FAQ | null>(null);
+    const [formData, setFormData] = useState({
+        question: "",
+        answer: ""
+    });
 
     const fetchItems = async () => {
         setLoading(true);
@@ -87,22 +91,26 @@ export default function FAQManagement() {
         if (user) fetchItems();
     }, [user]);
 
-    const handleAdd = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            await addDoc(collection(db, "faqs"), {
-                question,
-                answer,
-                createdAt: serverTimestamp()
+    const handleOpenModal = (item?: FAQ) => {
+        if (item) {
+            setEditingItem(item);
+            setFormData({
+                question: item.question,
+                answer: item.answer
             });
-            setIsAdding(false);
-            setQuestion("");
-            setAnswer("");
-            fetchItems();
-        } catch (error) {
-            console.error("Error adding FAQ:", error);
-            alert("Failed to add FAQ");
+        } else {
+            setEditingItem(null);
+            setFormData({
+                question: "",
+                answer: ""
+            });
         }
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setEditingItem(null);
     };
 
     const handleDelete = async (id: string) => {
@@ -112,6 +120,31 @@ export default function FAQManagement() {
             setItems(items.filter(item => item.id !== id));
         } catch (error) {
             console.error("Error deleting FAQ:", error);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (editingItem) {
+                // Update existing
+                await updateDoc(doc(db, "faqs", editingItem.id), {
+                    question: formData.question,
+                    answer: formData.answer
+                });
+            } else {
+                // Create new
+                await addDoc(collection(db, "faqs"), {
+                    question: formData.question,
+                    answer: formData.answer,
+                    createdAt: serverTimestamp()
+                });
+            }
+            handleCloseModal();
+            fetchItems();
+        } catch (error) {
+            console.error("Error saving FAQ:", error);
+            alert("Failed to save FAQ");
         }
     };
 
@@ -148,47 +181,58 @@ export default function FAQManagement() {
                         Seed Defaults
                     </button>
                     <button
-                        onClick={() => setIsAdding(!isAdding)}
+                        onClick={() => handleOpenModal()}
                         className="bg-neutral-900 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-neutral-800 transition-colors"
                     >
                         <Plus className="w-4 h-4" />
-                        {isAdding ? "Cancel" : "Add FAQ"}
+                        Add FAQ
                     </button>
                 </div>
             </div>
 
-            {isAdding && (
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-neutral-200 mb-8 animate-in fade-in">
-                    <h2 className="font-bold text-lg mb-4">New FAQ</h2>
-                    <form onSubmit={handleAdd} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-700 mb-1">Question</label>
-                            <input
-                                value={question}
-                                onChange={e => setQuestion(e.target.value)}
-                                className="w-full p-2 border rounded-lg"
-                                placeholder="e.g. How do I join?"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-700 mb-1">Answer</label>
-                            <textarea
-                                value={answer}
-                                onChange={e => setAnswer(e.target.value)}
-                                className="w-full p-2 border rounded-lg h-24"
-                                placeholder="Short answer..."
-                                required
-                            />
-                        </div>
-                        <div className="flex justify-end">
-                            <button type="submit" className="bg-dravida-red text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700">
-                                Save FAQ
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
+            <Modal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                title={editingItem ? "Edit FAQ" : "New FAQ"}
+            >
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Question</label>
+                        <input
+                            value={formData.question}
+                            onChange={e => setFormData({ ...formData, question: e.target.value })}
+                            className="w-full p-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900"
+                            placeholder="e.g. How do I join?"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Answer</label>
+                        <textarea
+                            value={formData.answer}
+                            onChange={e => setFormData({ ...formData, answer: e.target.value })}
+                            className="w-full p-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 h-24"
+                            placeholder="Short answer..."
+                            required
+                        />
+                    </div>
+                    <div className="flex justify-end pt-4">
+                        <button
+                            type="button"
+                            onClick={handleCloseModal}
+                            className="mr-2 px-4 py-2 text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="bg-dravida-red text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition-colors"
+                        >
+                            {editingItem ? "Save Changes" : "Save FAQ"}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
 
             {loading ? (
                 <div className="flex justify-center py-12">
@@ -202,18 +246,27 @@ export default function FAQManagement() {
             ) : (
                 <div className="space-y-4">
                     {items.map((item) => (
-                        <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-neutral-200 flex justify-between items-start">
-                            <div>
+                        <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-neutral-200 flex flex-col md:flex-row gap-4 items-start md:items-center group">
+                            <div className="flex-1">
                                 <h3 className="font-bold text-neutral-900 text-lg mb-1">{item.question}</h3>
                                 <p className="text-neutral-600 text-sm whitespace-pre-wrap">{item.answer}</p>
                             </div>
-                            <button
-                                onClick={() => handleDelete(item.id)}
-                                className="text-neutral-400 hover:text-red-600 p-2 ml-4"
-                                title="Delete"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </button>
+                            <div className="flex items-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                <button
+                                    onClick={() => handleOpenModal(item)}
+                                    className="p-2 text-neutral-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                    title="Edit"
+                                >
+                                    <Edit className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(item.id)}
+                                    className="p-2 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                    title="Delete"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>

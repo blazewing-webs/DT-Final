@@ -15,6 +15,7 @@ import IdeologySection from "@/components/home/IdeologySection";
 import TimelineSection from "@/components/home/TimelineSection";
 import BookRecommendations from "@/components/home/BookRecommendations";
 import FAQSection from "@/components/home/FAQSection";
+import VideoSection from "@/components/home/VideoSection";
 import JoinCTA, { Disclaimer } from "@/components/home/JoinCTA";
 
 // --- Static Data Removed ---
@@ -96,6 +97,7 @@ export default function Home() {
             </div>
             {/* Static Content Sections */}
             <TimelineSection />
+            <VideoSection />
             <FAQSection />
 
             <Footer />
