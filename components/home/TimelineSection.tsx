@@ -1,10 +1,51 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { collection, query, orderBy, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { Loader2 } from "lucide-react";
+
+interface Milestone {
+    id: string;
+    year: string;
+    title: string;
+    desc: string;
+}
+
 export default function TimelineSection() {
-    const milestones = [
-        { year: "1925", title: "சுயமரியாதை இயக்கம்", desc: "தந்தை பெரியாரால் தோற்றுவிக்கப்பட்டது." },
-        { year: "1949", title: "திராவிட முன்னேற்றக் கழகம்", desc: "பேரறிஞர் அண்ணாவால் துவக்கம்." },
-        { year: "1967", title: "சமூக நீதிக்கு அரசியல் வெற்றி", desc: "மாநிலத்தில் ஆட்சி மாற்றம், சமூக நீதி நிலைநாட்டப்பட்டது." },
-        { year: "2000+", title: "இளம் தலைமுறை விழிப்புணர்வு", desc: "இணையம் வழி திராவிடக் கொள்கை பரவல்." },
-    ];
+    const [milestones, setMilestones] = useState<Milestone[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchMilestones = async () => {
+            try {
+                // Fetch and sort by year
+                const q = query(collection(db, "milestones"), orderBy("year", "asc"));
+                const querySnapshot = await getDocs(q);
+                const data = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })) as Milestone[];
+                setMilestones(data);
+            } catch (error) {
+                console.error("Error fetching milestones:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMilestones();
+    }, []);
+
+    if (loading) {
+        return (
+            <section className="py-12 bg-neutral-900 flex justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-neutral-500" />
+            </section>
+        );
+    }
+
+    if (milestones.length === 0) return null; // Hide section if no data
 
     return (
         <section className="py-16 bg-neutral-900 text-white relative overflow-hidden">
@@ -23,7 +64,7 @@ export default function TimelineSection() {
 
                     <div className="space-y-12">
                         {milestones.map((item, index) => (
-                            <div key={index} className={`flex flex-col md:flex-row items-center justify-center gap-8 ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
+                            <div key={item.id} className={`flex flex-col md:flex-row items-center justify-center gap-8 ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
                                 {/* Year Bubble */}
                                 <div className="hidden md:block w-1/2 text-right pr-8">
                                     {index % 2 === 0 && (
