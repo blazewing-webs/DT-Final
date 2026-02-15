@@ -15,16 +15,44 @@ interface FAQ {
 
 const DEFAULT_FAQS = [
     {
-        q: "திராவிட தலைமுறை அரசியல் கட்சியா?",
-        a: "இல்லை. இது ஒரு சிந்தனை இயக்கம். சமூக நீதி மற்றும் பகுத்தறிவு கருத்துக்களை மக்களிடம் கொண்டு சேர்ப்பதே இதன் நோக்கம்."
+        q: "What is the core objective of Dravida Thalaimurai? / திராவிட தலைமுறையின் முக்கிய நோக்கம் என்ன?",
+        a: "To promote social justice, rationalism, and equality among the youth. / இளைஞர்களிடையே சமூக நீதி, பகுத்தறிவு மற்றும் சமத்துவத்தை ஊக்குவிப்பதே இதன் நோக்கம்."
     },
     {
-        q: "யார் வேண்டுமானாலும் இணையலாமா?",
-        a: "ஆம். சாதி, மதம், பாலினம், மொழி என எந்த வேற்றுமையும் இன்றி மனிதநேயம் கொண்ட யார் வேண்டுமானாலும் இணையலாம்."
+        q: "Is this a political party? / இது ஒரு அரசியல் கட்சியா?",
+        a: "No, it is a social movement and ideological platform, not a political party. / இல்லை, இது ஒரு சமூக இயக்கம் மற்றும் கருத்தியல் தளம், அரசியல் கட்சி அல்ல."
     },
     {
-        q: "இந்த தளம் யாருக்காக?",
-        a: "மாணவர்கள், இளைஞர்கள் மற்றும் சமூக மாற்றத்தை விரும்பும் அனைத்து பொதுமக்களுக்கும் ஆனது."
+        q: "Who can join this movement? / இந்த இயக்கத்தில் யார் இணையலாம்?",
+        a: "Anyone who believes in humanity and equality, regardless of caste or religion. / சாதி, மத வேறுபாடின்றி மனிதநேயத்தையும் சமத்துவத்தையும் நம்பும் யார் வேண்டுமானாலும் இணையலாம்."
+    },
+    {
+        q: "How can students contribute? / மாணவர்கள் எவ்வாறு பங்களிக்க முடியும்?",
+        a: "Students can write articles, participate in events, and spread awareness about social rights. / மாணவர்கள் கட்டுரைகள் எழுதலாம், நிகழ்வுகளில் பங்கேற்கலாம் மற்றும் சமூக உரிமைகள் பற்றிய விழிப்புணர்வை ஏற்படுத்தலாம்."
+    },
+    {
+        q: "What is the stance on education? / கல்வியில் உங்கள் நிலைப்பாடு என்ன?",
+        a: "We believe in 'Education for All' and oppose barriers to learning. / 'அனைவருக்கும் கல்வி' என்பதை நாங்கள் நம்புகிறோம் மற்றும் கற்றல் தடைகளை எதிர்க்கிறோம்."
+    },
+    {
+        q: "Do you support women's rights? / பெண்கள் உரிமைகளை ஆதரிக்கிறீர்களா?",
+        a: "Yes, women's liberation and empowerment are fundamental to our ideology. / ஆம், பெண் விடுதலையும் அதிகாரமளித்தலும் எங்கள் கொள்கையின் அடிப்படையாகும்."
+    },
+    {
+        q: "How to submit articles? / கட்டுரைகளை எவ்வாறு சமர்ப்பிப்பது?",
+        a: "You can submit articles via the 'Contact Us' page or email us directly. / 'தொடர்பு கொள்க' பக்கம் மூலமாகவோ அல்லது மின்னஞ்சல் மூலமாகவோ கட்டுரைகளை அனுப்பலாம்."
+    },
+    {
+        q: "Are there membership fees? / இதில் இணைய கட்டணம் உள்ளதா?",
+        a: "No, joining and participating in our digital platform is completely free. / இல்லை, எங்கள் டிஜிட்டல் தளத்தில் இணைவதும் பங்கேற்பதும் முற்றிலும் இலவசம்."
+    },
+    {
+        q: "What is the Dravidian Model? / திராவிட மாடல் என்றால் என்ன?",
+        a: "It is a governance model based on inclusive growth, social justice, and equality. / இது அனைவரையும் உள்ளடக்கிய வளர்ச்சி, சமூக நீதி மற்றும் சமத்துவத்தை அடிப்படையாகக் கொண்ட நிர்வாக முறை."
+    },
+    {
+        q: "How do I stay updated? / உடனுக்குடன் தகவல்களை பெறுவது எப்படி?",
+        a: "Follow our website and social media handles for daily news and updates. / தினசரி செய்திகள் மற்றும் அறிவிப்புகளுக்கு எங்கள் இணையதளம் மற்றும் சமூக ஊடக பக்கங்களைப் பின்தொடரவும்."
     }
 ];
 
