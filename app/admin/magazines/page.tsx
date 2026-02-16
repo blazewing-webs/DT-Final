@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { collection, query, orderBy, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { Plus, Trash2, Loader2, BookOpen, ExternalLink } from "lucide-react";
+import { collection, query, orderBy, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "@/lib/firebase";
+import { Plus, Trash2, Loader2, BookOpen, ExternalLink, Edit, X, Save, Upload } from "lucide-react";
 
 interface Magazine {
     id: string;
@@ -18,6 +19,9 @@ interface Magazine {
 export default function MagazinesListPage() {
     const [magazines, setMagazines] = useState<Magazine[]>([]);
     const [loading, setLoading] = useState(true);
+    const [editingMagazine, setEditingMagazine] = useState<Magazine | null>(null);
+    const [updating, setUpdating] = useState(false);
+    const [uploadingField, setUploadingField] = useState<'cover' | 'pdf' | null>(null);
 
     useEffect(() => {
         fetchMagazines();
@@ -48,6 +52,68 @@ export default function MagazinesListPage() {
                 console.error("Error deleting magazine:", error);
                 alert("Failed to delete.");
             }
+        }
+    };
+
+    const handleEdit = (magazine: Magazine) => {
+        setEditingMagazine({ ...magazine });
+    };
+
+    const handleFileUpload = async (file: File | null, type: 'cover' | 'pdf') => {
+        if (!file || !editingMagazine) return;
+        setUploadingField(type);
+        try {
+            console.log(`Starting upload for ${type}: ${file.name}`);
+            const path = `magazines/${Date.now()}_${file.name}`;
+            const storageRef = ref(storage, path);
+            await uploadBytes(storageRef, file);
+            console.log("Upload complete, getting URL...");
+            const url = await getDownloadURL(storageRef);
+            console.log("URL retrieved:", url);
+
+            setEditingMagazine(prev => prev ? ({
+                ...prev,
+                [type === 'cover' ? 'coverUrl' : 'pdfUrl']: url
+            }) : null);
+
+            alert(`${type === 'cover' ? 'Cover image' : 'PDF'} uploaded successfully!`);
+        } catch (error: any) {
+            console.error("Upload error details:", error);
+            // Show more specific error to user
+            const message = error?.message || "Unknown error";
+            if (message.includes("unauthorized")) {
+                alert("Upload failed: Permission denied. Please check your login status.");
+            } else {
+                alert(`Upload failed: ${message}`);
+            }
+        } finally {
+            setUploadingField(null);
+        }
+    };
+
+    const handleUpdate = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editingMagazine) return;
+
+        setUpdating(true);
+        try {
+            const magRef = doc(db, "magazines", editingMagazine.id);
+            await updateDoc(magRef, {
+                title: editingMagazine.title,
+                month: editingMagazine.month,
+                coverUrl: editingMagazine.coverUrl,
+                pdfUrl: editingMagazine.pdfUrl
+            });
+
+            // Update local state
+            setMagazines(magazines.map(m => m.id === editingMagazine.id ? editingMagazine : m));
+            setEditingMagazine(null);
+            alert("Magazine updated successfully!");
+        } catch (error) {
+            console.error("Error updating magazine:", error);
+            alert("Failed to update magazine.");
+        } finally {
+            setUpdating(false);
         }
     };
 
@@ -123,12 +189,22 @@ export default function MagazinesListPage() {
                                             )}
                                         </td>
                                         <td className="p-4 text-right">
-                                            <button
-                                                onClick={() => handleDelete(mag.id)}
-                                                className="p-2 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(mag)}
+                                                    className="p-2 text-neutral-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    title="Edit"
+                                                >
+                                                    <Edit className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(mag.id)}
+                                                    className="p-2 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -137,6 +213,111 @@ export default function MagazinesListPage() {
                     </div>
                 )}
             </div>
+
+            {/* Edit Modal */}
+            {editingMagazine && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 animate-in fade-in zoom-in duration-200">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold">Edit Magazine</h2>
+                            <button
+                                onClick={() => setEditingMagazine(null)}
+                                className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
+                            >
+                                <X className="w-5 h-5 text-neutral-500" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleUpdate} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold text-neutral-700 mb-1">Title</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={editingMagazine.title}
+                                    onChange={(e) => setEditingMagazine({ ...editingMagazine, title: e.target.value })}
+                                    className="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-neutral-700 mb-1">Month / Edition</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={editingMagazine.month}
+                                    onChange={(e) => setEditingMagazine({ ...editingMagazine, month: e.target.value })}
+                                    className="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-neutral-700 mb-1">Cover Image URL</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        required
+                                        value={editingMagazine.coverUrl}
+                                        onChange={(e) => setEditingMagazine({ ...editingMagazine, coverUrl: e.target.value })}
+                                        className="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red"
+                                    />
+                                    <label className="flex items-center justify-center px-4 py-2 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 rounded-lg cursor-pointer transition-colors">
+                                        {uploadingField === 'cover' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5 text-neutral-600" />}
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            accept="image/*"
+                                            disabled={!!uploadingField}
+                                            onChange={(e) => handleFileUpload(e.target.files?.[0] || null, 'cover')}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-neutral-700 mb-1">PDF URL</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        required
+                                        value={editingMagazine.pdfUrl}
+                                        onChange={(e) => setEditingMagazine({ ...editingMagazine, pdfUrl: e.target.value })}
+                                        className="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red"
+                                    />
+                                    <label className="flex items-center justify-center px-4 py-2 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 rounded-lg cursor-pointer transition-colors">
+                                        {uploadingField === 'pdf' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5 text-neutral-600" />}
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            accept=".pdf"
+                                            disabled={!!uploadingField}
+                                            onChange={(e) => handleFileUpload(e.target.files?.[0] || null, 'pdf')}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setEditingMagazine(null)}
+                                    className="px-4 py-2 text-neutral-600 font-bold hover:bg-neutral-100 rounded-lg transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={updating || !!uploadingField}
+                                    className="px-6 py-2 bg-dravida-red text-white font-bold rounded-lg hover:bg-black transition-colors flex items-center gap-2 disabled:opacity-50"
+                                >
+                                    {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -5,7 +5,8 @@ import { ArrowLeft, Save, Loader2, Upload } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "@/lib/firebase";
 
 export default function NewMagazinePage() {
     const router = useRouter();
@@ -16,6 +17,29 @@ export default function NewMagazinePage() {
         coverUrl: "",
         pdfUrl: "",
     });
+
+    const handleFileUpload = async (file: File | null, type: 'cover' | 'pdf') => {
+        if (!file) return;
+        setLoading(true);
+        try {
+            const path = `magazines/${Date.now()}_${file.name}`;
+            const storageRef = ref(storage, path);
+            await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(storageRef);
+
+            setFormData(prev => ({
+                ...prev,
+                [type === 'cover' ? 'coverUrl' : 'pdfUrl']: url
+            }));
+
+            alert(`${type === 'cover' ? 'Cover image' : 'PDF'} uploaded successfully!`);
+        } catch (error) {
+            console.error("Upload error:", error);
+            alert("Upload failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -75,37 +99,49 @@ export default function NewMagazinePage() {
                 {/* Cover Image URL */}
                 <div>
                     <label className="block text-sm font-bold text-neutral-700 mb-2">Cover Image URL</label>
-                    <input
-                        type="url"
-                        required
-                        className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red"
-                        placeholder="https://example.com/cover.jpg"
-                        value={formData.coverUrl}
-                        onChange={(e) => setFormData({ ...formData, coverUrl: e.target.value })}
-                    />
-                    <p className="text-xs text-neutral-500 mt-1">
-                        Direct link to the cover image.
-                    </p>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            required
+                            className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red"
+                            placeholder="https://example.com/cover.jpg"
+                            value={formData.coverUrl}
+                            onChange={(e) => setFormData({ ...formData, coverUrl: e.target.value })}
+                        />
+                        <label className="flex items-center justify-center px-4 py-2 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 rounded-lg cursor-pointer transition-colors">
+                            <Upload className="w-5 h-5 text-neutral-600" />
+                            <input
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={(e) => handleFileUpload(e.target.files?.[0] || null, 'cover')}
+                            />
+                        </label>
+                    </div>
                 </div>
 
                 {/* PDF URL */}
                 <div className="bg-neutral-50 p-6 rounded-xl border border-dashed border-neutral-300">
                     <label className="block text-sm font-bold text-neutral-700 mb-2">PDF Document URL</label>
-                    <div className="flex items-center gap-2 mb-2">
-                        <Upload className="w-5 h-5 text-neutral-400" />
-                        <span className="text-sm font-medium text-neutral-600">Document Upload</span>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            required
+                            className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red bg-white"
+                            placeholder="https://example.com/magazine-feb-2026.pdf"
+                            value={formData.pdfUrl}
+                            onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
+                        />
+                        <label className="flex items-center justify-center px-4 py-2 bg-white hover:bg-neutral-100 border border-neutral-300 rounded-lg cursor-pointer transition-colors">
+                            <Upload className="w-5 h-5 text-neutral-600" />
+                            <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf"
+                                onChange={(e) => handleFileUpload(e.target.files?.[0] || null, 'pdf')}
+                            />
+                        </label>
                     </div>
-                    <input
-                        type="url"
-                        required
-                        className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red bg-white"
-                        placeholder="https://example.com/magazine-feb-2026.pdf"
-                        value={formData.pdfUrl}
-                        onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
-                    />
-                    <p className="text-xs text-neutral-500 mt-2">
-                        For now, please upload your PDF to a public host (like Google Drive, Dropbox, or a public bucket) and paste the link here.
-                    </p>
                 </div>
 
                 {/* Submit */}

@@ -23,13 +23,17 @@ import JoinCTA, { Disclaimer } from "@/components/home/JoinCTA";
 
 import Footer from "@/components/layout/Footer";
 
+
 import SidebarWrapper from "@/components/news/SidebarWrapper";
+import MagazineHero from "@/components/home/MagazineHero";
 
 export default function Home() {
     return (
         <main className="min-h-screen bg-white font-sans">
             <TopBar />
             <Navbar />
+
+            <MagazineHero />
 
             <div className="container mx-auto px-4 md:px-6 py-8">
                 {/* Featured Section (Bento Grid - Needs 7 items) */}
