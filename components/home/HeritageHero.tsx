@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Users, Scale, Brain } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Users, Scale, Brain, ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
@@ -9,7 +9,9 @@ import { db } from "@/lib/firebase";
 
 export default function HeritageHero({ dictionary }: { dictionary?: any }) {
     const [magazines, setMagazines] = useState<any[]>([]);
+    const [activeIndex, setActiveIndex] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
 
     const t = dictionary?.hero || {
         badge: "Daily News & Magazine",
@@ -18,9 +20,16 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
     };
 
     useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    useEffect(() => {
         const fetchMagazines = async () => {
             try {
-                const q = query(collection(db, "magazines"), orderBy("createdAt", "desc"), limit(3));
+                const q = query(collection(db, "magazines"), orderBy("createdAt", "desc"), limit(5));
                 const querySnapshot = await getDocs(q);
                 const data = querySnapshot.docs.map(doc => ({
                     id: doc.id,
@@ -39,34 +48,50 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
         fetchMagazines();
     }, []);
 
-    // Fallback data if no magazines
+    // Fallback if no magazines
     const features = [
         {
             id: "f1",
             title: "Heritage Series",
-            image: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=2070&auto=format&fit=crop",
+            coverUrl: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=2070&auto=format&fit=crop",
             desc: "Social Justice"
         },
         {
             id: "f2",
             title: "Heritage Series",
-            image: "https://images.unsplash.com/photo-1533073526757-2c8ca1df9f1c?q=80&w=2669&auto=format&fit=crop",
+            coverUrl: "https://images.unsplash.com/photo-1533073526757-2c8ca1df9f1c?q=80&w=2669&auto=format&fit=crop",
             desc: "Struggle"
         },
         {
             id: "f3",
             title: "Heritage Series",
-            image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop",
+            coverUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop",
             desc: "Rationalism"
         }
     ];
 
-    // Ensure we always have 3 items (Left, Center, Right)
-    const items = magazines.length >= 3 ? magazines.slice(0, 3) : [...magazines, ...features].slice(0, 3);
-    // If absolutely nothing, use features
-    const finalItems = items.length === 3 ? items : features;
+    // Ensure we always have at least 3 items for the carousel logic to work without key collisions
+    const displayItems = magazines.length >= 3
+        ? magazines
+        : [...magazines, ...features].slice(0, 3);
 
-    const [leftItem, centerItem, rightItem] = finalItems;
+    const handleNext = () => {
+        setActiveIndex((prev) => (prev + 1) % displayItems.length);
+    };
+
+    const handlePrev = () => {
+        setActiveIndex((prev) => (prev - 1 + displayItems.length) % displayItems.length);
+    };
+
+    // Prepare the window of 3 items based on activeIndex
+    const prevIndex = (activeIndex - 1 + displayItems.length) % displayItems.length;
+    const nextIndex = (activeIndex + 1) % displayItems.length;
+
+    const visibleCards = [
+        { ...displayItems[prevIndex], position: 'left', key: displayItems[prevIndex].id },
+        { ...displayItems[activeIndex], position: 'center', key: displayItems[activeIndex].id },
+        { ...displayItems[nextIndex], position: 'right', key: displayItems[nextIndex].id }
+    ];
 
     return (
         <section className="relative w-full min-h-[90vh] bg-transparent text-neutral-900 overflow-hidden flex items-center pt-24 pb-12 lg:pt-32">
@@ -82,8 +107,6 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
 
                 {/* Left Column: Text Content */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
-
-                    {/* Badge */}
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -95,7 +118,6 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         </span>
                     </motion.div>
 
-                    {/* Title */}
                     <motion.h1
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -107,7 +129,6 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         </span>
                     </motion.h1>
 
-                    {/* Subtitle */}
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -118,69 +139,88 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                     </motion.p>
                 </div>
 
-                {/* Right Column: Visual Composition */}
+                {/* Right Column: Carousel */}
                 <div className="relative w-full h-[450px] lg:h-[550px] flex justify-center items-center perspective-[2000px] order-1 lg:order-2 mt-8 lg:mt-0">
+                    <AnimatePresence initial={false} mode="popLayout">
+                        {visibleCards.map((item) => {
+                            let x = 0;
+                            let y = 0;
+                            let rotate = 0;
+                            let zIndex = 0;
+                            let scale = 0.9;
+                            let opacity = 1;
 
-                    {/* Left Card (Tilted Left) */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -50, rotate: -20 }}
-                        animate={{ opacity: 1, x: 0, rotate: -12 }}
-                        transition={{ delay: 0.5, duration: 0.8 }}
-                        className="absolute left-[5%] md:left-[10%] lg:left-[5%] top-8 w-[160px] md:w-[220px] lg:w-[240px] aspect-[3/4] rounded-2xl shadow-xl bg-white border-4 border-white z-10 transform origin-bottom-right"
-                    >
-                        <div className="relative w-full h-full rounded-xl overflow-hidden bg-neutral-200">
-                            <Image
-                                src={leftItem?.coverUrl || leftItem?.image}
-                                alt="Left Magazine"
-                                fill
-                                className="object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/10"></div>
-                        </div>
-                    </motion.div>
+                            if (item.position === 'left') {
+                                x = isMobile ? -40 : -180;
+                                y = isMobile ? 10 : 0;
+                                rotate = -12;
+                                zIndex = 10;
+                                scale = 0.85;
+                            } else if (item.position === 'right') {
+                                x = isMobile ? 40 : 180;
+                                y = isMobile ? 10 : 0;
+                                rotate = 12;
+                                zIndex = 10;
+                                scale = 0.85;
+                            } else {
+                                // Center
+                                x = 0;
+                                y = 0;
+                                rotate = 0;
+                                zIndex = 20;
+                                scale = 1;
+                            }
 
-                    {/* Right Card (Tilted Right) */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 50, rotate: 20 }}
-                        animate={{ opacity: 1, x: 0, rotate: 12 }}
-                        transition={{ delay: 0.5, duration: 0.8 }}
-                        className="absolute right-[5%] md:right-[10%] lg:right-[5%] top-8 w-[160px] md:w-[220px] lg:w-[240px] aspect-[3/4] rounded-2xl shadow-xl bg-white border-4 border-white z-10 transform origin-bottom-left"
-                    >
-                        <div className="relative w-full h-full rounded-xl overflow-hidden bg-neutral-200">
-                            <Image
-                                src={rightItem?.coverUrl || rightItem?.image}
-                                alt="Right Magazine"
-                                fill
-                                className="object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/10"></div>
-                        </div>
-                    </motion.div>
+                            return (
+                                <motion.div
+                                    key={item.key} // Stable key
+                                    layoutId={item.key} // Optional: Keep layoutId for morphing if it works well, else remove
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ x, y, rotate, zIndex, scale, opacity }}
+                                    exit={{ opacity: 0, scale: 0.5 }}
+                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                    drag="x"
+                                    dragConstraints={{ left: 0, right: 0 }}
+                                    dragElastic={0.1}
+                                    whileDrag={{ cursor: "grabbing", scale: 1.05, zIndex: 100 }}
+                                    whileHover={item.position === 'center' ? { scale: 1.05 } : {}}
+                                    onDragEnd={(e, { offset }) => {
+                                        if (offset.x < -50) handleNext();
+                                        else if (offset.x > 50) handlePrev();
+                                    }}
+                                    onTap={() => {
+                                        if (item.position === 'center') {
+                                            if (item.pdfUrl) window.open(item.pdfUrl, '_blank');
+                                        } else if (item.position === 'left') {
+                                            handlePrev();
+                                        } else {
+                                            handleNext();
+                                        }
+                                    }}
+                                    className="absolute w-[200px] md:w-[260px] lg:w-[300px] aspect-[3/4] rounded-2xl shadow-xl bg-white border-4 border-white cursor-grab"
+                                >
+                                    <div className="relative w-full h-full rounded-xl overflow-hidden bg-neutral-200">
+                                        <Image
+                                            src={item.coverUrl || item.image} // Handle both fallback and fetched
+                                            alt={item.title}
+                                            fill
+                                            className="object-cover pointer-events-none"
+                                        />
+                                        <div className="absolute inset-0 bg-black/10"></div>
+                                        {item.position === 'center' && (
+                                            <div className="absolute bottom-6 left-6 text-left text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                                                    Read PDF <ExternalLink className="w-3 h-3" />
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
+                    </AnimatePresence>
 
-                    {/* Center Card (Straight) */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.7, duration: 0.8 }}
-                        className="absolute top-0 w-[200px] md:w-[260px] lg:w-[300px] aspect-[3/4] rounded-2xl shadow-2xl bg-white border-4 border-white z-20 cursor-pointer hover:-translate-y-2 transition-transform"
-                        onClick={() => centerItem?.pdfUrl && window.open(centerItem.pdfUrl, '_blank')}
-                    >
-                        <div className="relative w-full h-full rounded-xl overflow-hidden bg-neutral-200">
-                            <Image
-                                src={centerItem?.coverUrl || centerItem?.image}
-                                alt="Center Magazine"
-                                fill
-                                className="object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-
-                            <div className="absolute bottom-6 left-6 text-left text-white">
-                                <h3 className="text-xl font-bold leading-tight drop-shadow-md">{centerItem?.title || "Latest Issue"}</h3>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    {/* Compact Floating Stats Bar (Aligned to Visuals) */}
+                    {/* Compact Floating Stats Bar */}
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -188,7 +228,7 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         className="absolute bottom-8 w-[95%] max-w-lg bg-[#111]/95 text-white p-2 pr-6 rounded-full shadow-2xl flex items-center justify-between z-30 border border-white/10 backdrop-blur-md"
                     >
                         {/* Red Highlight Pill */}
-                        <div className="bg-dravida-red text-white py-2 px-4 rounded-full flex items-center gap-3 shadow-lg hover:scale-105 transition-transform">
+                        <div className="bg-dravida-red text-white py-2 px-4 rounded-full flex items-center gap-3 shadow-lg hover:scale-105 transition-transform cursor-pointer" onClick={() => window.open(displayItems[activeIndex].pdfUrl, '_blank')}>
                             <Users className="w-4 h-4 text-white" />
                             <div className="flex flex-col text-left">
                                 <span className="text-lg font-bold leading-none">50K+</span>
@@ -196,7 +236,7 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                             </div>
                         </div>
 
-                        {/* Simplified Stats Group for Compact Layout */}
+                        {/* Stats Group */}
                         <div className="flex items-center gap-6 justify-end flex-1 px-2">
                             <div className="flex flex-col text-right">
                                 <span className="text-lg font-bold">100+</span>

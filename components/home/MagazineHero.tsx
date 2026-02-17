@@ -118,19 +118,19 @@ export default function MagazineHero() {
                             let y = 0;
 
                             if (mag.position === 'left') {
-                                x = -220; // Move left
-                                scale = 0.85;
+                                x = isMobile ? -40 : -220; // Tight stack on mobile
+                                scale = isMobile ? 0.9 : 0.85;
                                 zIndex = 5;
-                                rotate = -10;
-                                opacity = 1;
-                                y = 40;
+                                rotate = -6; // Less rotation
+                                opacity = 1; // Visible now
+                                y = isMobile ? 10 : 40;
                             } else if (mag.position === 'right') {
-                                x = 220; // Move right
-                                scale = 0.85;
-                                zIndex = 5;
-                                rotate = 10;
+                                x = isMobile ? 40 : 220; // Tight stack on mobile
+                                scale = isMobile ? 0.9 : 0.85;
+                                zIndex = 4;
+                                rotate = 6;
                                 opacity = 1;
-                                y = 40;
+                                y = isMobile ? 10 : 40;
                             } else {
                                 // Center
                                 zIndex = 20;
@@ -139,33 +139,45 @@ export default function MagazineHero() {
 
                             return (
                                 <motion.div
-                                    key={`${mag.id}-${mag.position}`}
-                                    layoutId={mag.id}
+                                    key={mag.id}
                                     initial={{ opacity: 0, scale: 0.8, y: 100 }}
                                     animate={{
-                                        x: isMobile && mag.position !== 'center' ? 0 : x,
+                                        x,
                                         y,
-                                        scale: isMobile ? (mag.position === 'center' ? 1 : 0.8) : scale,
+                                        scale,
                                         zIndex,
                                         rotate,
-                                        opacity: isMobile && mag.position !== 'center' ? 0 : opacity
+                                        opacity
                                     }}
-                                    whileHover={{
-                                        scale: 1, // Bring side cards to full size on hover
-                                        zIndex: 35, // Bring to very front (over floating card)
-                                        rotate: 0, // Straighten
-                                        y: -20, // Lift up slightly
-                                        transition: { duration: 0.3 }
-                                    }}
-                                    exit={{ opacity: 0, scale: 0.5 }}
+                                    drag="x"
+                                    dragConstraints={{ left: 0, right: 0 }}
+                                    dragElastic={0.1}
+                                    whileDrag={{ zIndex: 100, scale: 1.05, cursor: "grabbing" }}
+                                    whileHover={mag.position === 'center' ? { scale: 1.05 } : {}}
                                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    className={`absolute bottom-0 w-[240px] md:w-[340px] aspect-[3/4] rounded-xl shadow-2xl overflow-hidden cursor-pointer bg-neutral-100 group ${mag.position !== 'center' ? 'hidden md:block' : ''}`} // Hide side magazines on mobile for cleaner view
-                                    onClick={() => mag.position === 'center' ? window.open(mag.pdfUrl, '_blank') : mag.position === 'left' ? handlePrev() : handleNext()}
+                                    className="absolute bottom-0 w-[240px] md:w-[340px] aspect-[3/4] rounded-xl shadow-2xl overflow-hidden cursor-grab bg-neutral-100 group"
+                                    onDragEnd={(e, info) => {
+                                        const { offset } = info;
+                                        if (offset.x < -50) {
+                                            handleNext();
+                                        } else if (offset.x > 50) {
+                                            handlePrev();
+                                        }
+                                    }}
+                                    onTap={() => {
+                                        if (mag.position === 'center') {
+                                            window.open(mag.pdfUrl, '_blank');
+                                        } else if (mag.position === 'left') {
+                                            handlePrev();
+                                        } else {
+                                            handleNext();
+                                        }
+                                    }}
                                 >
                                     <img
                                         src={mag.coverUrl}
                                         alt={mag.title}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover pointer-events-none" // Prevent img drag interfering
                                     />
                                     {/* Hover Overlay for Center Item */}
                                     {mag.position === 'center' && (
