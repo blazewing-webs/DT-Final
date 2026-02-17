@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { collection, query, orderBy, getDocs, deleteDoc, doc, addDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Trash2, Plus, Users, Loader2, Edit, Save, X } from "lucide-react";
+import { Trash2, Plus, Users, Loader2, Edit, Save, X, Upload } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import { useAuth } from "@/components/admin/AuthContext";
+import { compressImage } from "@/lib/imageUtils";
 
 interface TeamMember {
     id: string;
@@ -89,6 +90,19 @@ export default function TeamManagement() {
         }
     };
 
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+            const base64 = await compressImage(file, 400); // Optimize for team avatars
+            setFormData(prev => ({ ...prev, imageUrl: base64 }));
+            e.target.value = "";
+        } catch (error) {
+            console.error("Image processing error:", error);
+            alert("Failed to process image");
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -166,14 +180,45 @@ export default function TeamManagement() {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">Profile Image URL</label>
-                        <input
-                            type="url"
-                            value={formData.imageUrl}
-                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                            placeholder="https://..."
-                            className="w-full p-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900"
-                        />
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Profile Image</label>
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={formData.imageUrl.startsWith('data:') ? 'Image Data (Base64)' : formData.imageUrl}
+                                placeholder="No image selected"
+                                className="w-full p-2 border border-neutral-300 rounded-lg bg-neutral-50 text-neutral-500 cursor-not-allowed text-sm"
+                                readOnly
+                            />
+                            <label className="flex items-center justify-center px-4 py-2 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 rounded-lg cursor-pointer transition-colors shadow-sm whitespace-nowrap">
+                                <Upload className="w-5 h-5 mr-2 text-neutral-600" />
+                                <span className="text-sm font-medium">Upload</span>
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                />
+                            </label>
+                            {formData.imageUrl && (
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, imageUrl: "" })}
+                                    className="p-2 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-lg transition-colors"
+                                    title="Remove Image"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            )}
+                        </div>
+                        {/* Preview */}
+                        {formData.imageUrl && (
+                            <div className="mt-3 text-center">
+                                <div className="inline-block w-24 h-24 rounded-full overflow-hidden border-2 border-white shadow-md relative bg-neutral-100">
+                                    <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                                </div>
+                                <p className="text-xs text-neutral-500 mt-1">Preview</p>
+                            </div>
+                        )}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-1">Short Bio</label>

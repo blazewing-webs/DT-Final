@@ -1,0 +1,14 @@
+{
+    "hero": {
+        "badge": "Daily News & Magazine",
+        "title": "Dravida Thalaimurai",
+        "subtitle": "Voice of Youth | Path of Equality",
+        "read_now": "Read Now",
+        "scroll": "Scroll"
+    },
+    "nav": {
+        "home": "Home",
+        "politics": "Politics",
+        "education": "Education"
+    }
+}

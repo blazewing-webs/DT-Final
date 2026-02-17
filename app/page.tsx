@@ -1,113 +1,69 @@
-import FeaturedGrid from "@/components/news/FeaturedGrid";
+"use client";
 
-import CategoryFeed from "@/components/news/CategoryFeed"; // Added
-import CategorySection from "@/components/news/CategorySection";
-import NewsCard from "@/components/news/NewsCard";
-import Sidebar from "@/components/news/Sidebar";
-import LiveTimeline from "@/components/news/LiveTimeline";
-
-import TopBar from "@/components/layout/TopBar";
 import Navbar from "@/components/layout/Navbar";
-
-// Extra Content Components
-import QuoteBanner from "@/components/home/QuoteBanner";
-import IdeologySection from "@/components/home/IdeologySection";
-import TimelineSection from "@/components/home/TimelineSection";
-import BookRecommendations from "@/components/home/BookRecommendations";
-import FAQSection from "@/components/home/FAQSection";
-import VideoSection from "@/components/home/VideoSection";
-import JoinCTA, { Disclaimer } from "@/components/home/JoinCTA";
-
-// --- Static Data Removed ---
-// All data is now fetched dynamically via SidebarWrapper, FeaturedGrid, CategoryFeed, and LiveTimeline.
-
 import Footer from "@/components/layout/Footer";
 
+// Existing Components
+import HeritageHero from "@/components/home/HeritageHero";
+import IdeologySection from "@/components/home/IdeologySection"; // Now Principles
+import TimelineSection from "@/components/home/TimelineSection"; // Now History
+import BookRecommendations from "@/components/home/BookRecommendations";
+import JoinCTA, { Disclaimer } from "@/components/home/JoinCTA";
 
-import SidebarWrapper from "@/components/news/SidebarWrapper";
-import MagazineHero from "@/components/home/MagazineHero";
+// New Components from About Page Refactor
+import AboutIntro from "@/components/home/AboutIntro";
+import DreamSection from "@/components/home/DreamSection";
+import MissionSection from "@/components/home/MissionSection";
+import YouthVoiceSection from "@/components/home/YouthVoiceSection";
+import QuotesGrid from "@/components/home/QuotesGrid";
+
+// Optional/Legacy (Keep if desired, otherwise comment out to streamline)
+import FAQSection from "@/components/home/FAQSection";
+import VideoSection from "@/components/home/VideoSection";
 
 export default function Home() {
     return (
         <main className="min-h-screen bg-white font-sans">
-            <TopBar />
             <Navbar />
 
-            <MagazineHero />
+            {/* 1. Hero Section */}
+            <HeritageHero />
 
-            <div className="container mx-auto px-4 md:px-6 py-8">
-                {/* Featured Section (Bento Grid - Needs 7 items) */}
-                <div className="flex items-center gap-2 mb-6">
-                    <div className="w-1 h-8 bg-dravida-red rounded-full"></div>
-                    <h2 className="text-2xl font-bold text-neutral-800">செய்திகள் (Latest News)</h2>
-                </div>
-                <FeaturedGrid
-                    quote="மலைகளின் அரசியே, நீலகிரியே! உன் வளம் காப்போம், உன் நலம் காப்போம்."
-                    quoteAuthor="குன்னூர் நிருபர்"
-                />
-            </div>
+            {/* FeaturedGrid Removed - Moved to /news */}
 
+            {/* 2. About Us Introduction */}
+            <AboutIntro />
 
+            {/* 3. Our Dream */}
+            <DreamSection />
 
-            <div className="container mx-auto px-4 md:px-6 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* Main Content Column */}
-                    <div className="lg:col-span-8 flex flex-col gap-10">
-                        {/* Politics Section */}
-                        <CategoryFeed
-                            title="அரசியல்"
-                            queryCategory="அரசியல் (Politics)"
-                            href="/politics"
-                        />
+            {/* 4. Our Mission */}
+            <MissionSection />
 
-                        {/* Education Section */}
-                        <CategoryFeed
-                            title="கல்வி"
-                            queryCategory="கல்வி (Education)"
-                            href="/education"
-                        />
-
-                        {/* History Section */}
-                        <CategoryFeed
-                            title="வரலாறு"
-                            queryCategory="வரலாறு (History)"
-                            href="/history"
-                        />
-
-                        {/* Society Section */}
-                        <CategoryFeed
-                            title="சமூகம்"
-                            queryCategory="சமூகம் (Society)"
-                            href="/society"
-                        />
-
-                        {/* Women's Welfare Section */}
-                        <CategoryFeed
-                            title="பெண்கள் நலம்"
-                            queryCategory="பெண்கள் நலம் (Women)"
-                            href="/women"
-                        />
-                    </div>
-
-                    {/* Sidebar Column */}
-                    <div className="lg:col-span-4 h-full relative">
-                        {/* Dynamic Sidebar */}
-                        <SidebarWrapper />
-
-
-
-                        {/* Sticky Timeline */}
-                        <div className="sticky top-24 mt-8">
-                            <LiveTimeline />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {/* Static Content Sections */}
+            {/* 5. History Timeline */}
             <TimelineSection />
-            <VideoSection />
-            <FAQSection />
 
+            {/* 6. Principles (Ideology) */}
+            <IdeologySection />
+
+            {/* 7. Youth Voice Parallax */}
+            <YouthVoiceSection />
+
+            {/* 8. Quotes Grid */}
+            <QuotesGrid />
+
+            {/* 9. Additional Content (Books, Videos, FAQs) */}
+            <BookRecommendations />
+
+            {/* 
+            <VideoSection />
+            <FAQSection /> 
+            */}
+
+            {/* 10. Call to Action */}
+            <JoinCTA />
+
+            <Disclaimer />
             <Footer />
         </main>
     );

@@ -5,6 +5,7 @@ import { ArrowLeft, Save, Upload, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { compressImage } from "@/lib/imageUtils";
 
 // Fallback if DB is empty
 const DEFAULT_CATEGORIES = [
@@ -83,6 +84,20 @@ export default function ArticleForm({ initialData, onSubmit, loading, buttonText
             setCategory(categories[0].name);
         }
     }, [initialData, categories]);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+            const base64 = await compressImage(file);
+            setImageUrl(base64);
+            // Reset input value to allow re-upload if needed
+            e.target.value = "";
+        } catch (error) {
+            console.error("Image processing error:", error);
+            alert("Failed to process image");
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -164,19 +179,47 @@ export default function ArticleForm({ initialData, onSubmit, loading, buttonText
                     </p>
                 </div>
 
-                {/* Image URL (No Storage) */}
+                {/* Image URL / Upload */}
                 <div>
-                    <label className="block text-sm font-bold text-neutral-700 mb-2">Image URL</label>
-                    <input
-                        type="text"
-                        className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red"
-                        placeholder="https://example.com/image.jpg"
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                    />
-                    <p className="text-xs text-neutral-500 mt-1">
-                        Paste a direct link to an image (e.g., from Unsplash or another host).
-                    </p>
+                    <label className="block text-sm font-bold text-neutral-700 mb-2">Cover Image (Upload or URL)</label>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:outline-none focus:border-dravida-red bg-neutral-50 text-sm font-mono truncate"
+                            placeholder="https://... or Upload Image"
+                            value={imageUrl.startsWith('data:') ? 'Image Data (Base64)' : imageUrl}
+                            onChange={(e) => !imageUrl.startsWith('data:') && setImageUrl(e.target.value)}
+                            disabled={imageUrl.startsWith('data:')}
+                        />
+                        <label className="flex items-center justify-center px-6 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 rounded-lg cursor-pointer transition-colors whitespace-nowrap min-w-[140px]">
+                            <Upload className="w-5 h-5 mr-2 text-neutral-600" />
+                            <span className="text-sm font-bold text-neutral-700">Upload</span>
+                            <input
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                            />
+                        </label>
+                        {imageUrl && (
+                            <button
+                                type="button"
+                                onClick={() => setImageUrl("")}
+                                className="px-4 py-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg font-bold text-sm"
+                            >
+                                Clear
+                            </button>
+                        )}
+                    </div>
+
+                    {imageUrl && (
+                        <div className="mt-4 relative w-full h-64 bg-neutral-100 rounded-xl overflow-hidden border border-neutral-200 shadow-sm group">
+                            <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <p className="text-white font-bold">Preview</p>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Excerpt */}

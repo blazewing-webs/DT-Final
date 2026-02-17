@@ -16,9 +16,18 @@ interface Magazine {
 }
 
 export default function MagazineHero() {
+    console.log("MagazineHero: Rendering Tamil Version");
     const [magazines, setMagazines] = useState<Magazine[]>([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     useEffect(() => {
         const fetchMagazines = async () => {
@@ -72,11 +81,11 @@ export default function MagazineHero() {
     ];
 
     return (
-        <section className="relative w-full min-h-[900px] bg-white text-neutral-900 overflow-hidden flex flex-col pt-12 pb-32">
+        <section className="relative w-full min-h-auto md:min-h-[850px] bg-white text-neutral-900 overflow-hidden flex flex-col pt-8 md:pt-12 pb-12 md:pb-20">
 
             {/* Header Content */}
-            <div className="container mx-auto px-4 z-10 text-center mb-12">
-                <div className="inline-flex items-center gap-2 mb-6">
+            <div className="container mx-auto px-4 z-10 text-center mb-6 md:mb-12">
+                <div className="inline-flex items-center gap-2 mb-4 md:mb-6">
                     <div className="flex -space-x-2">
                         {/* Placeholder avatars or icons to mimic the reference 'satisfied customers' */}
                         <div className="w-8 h-8 rounded-full bg-neutral-200 border-2 border-white flex items-center justify-center text-xs font-bold">DT</div>
@@ -86,19 +95,19 @@ export default function MagazineHero() {
                     <span className="text-sm font-semibold text-neutral-600">5000+ Regular Readers</span>
                 </div>
 
-                <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.1] mb-6">
-                    Knowledge is the Foundation of <br />
-                    <span className="text-dravida-red">Social Justice</span>
+                <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[1.4] mb-4 md:mb-8">
+                    திராவிட இயக்கமே <br />
+                    <span className="text-dravida-red">சமூக நீதியின் அடித்தளம்</span>
                 </h1>
 
-                <p className="max-w-2xl mx-auto text-lg text-neutral-500 mb-8">
-                    Explore the history, ideology, and contemporary relevance of the Dravidian movement through our monthly curated magazines.
-                </p>
+                {/* <p className="max-w-3xl mx-auto text-xl text-neutral-500 mb-10 font-medium leading-relaxed">
+                    திராவிட இயக்கத்தின் வரலாறு, கொள்கைகள் மற்றும் சமகாலத் தேவைகளை எங்கள் இதழ்கள் வாயிலாக அறிந்து கொள்ளுங்கள்.
+                </p> */}
             </div>
 
             {/* Main Visuals - 3 Magazines */}
-            <div className="relative flex-1 container mx-auto px-4 flex justify-center items-end min-h-[400px]">
-                <div className="relative w-full max-w-4xl h-[500px] flex items-end justify-center">
+            <div className="relative flex-1 container mx-auto px-4 flex justify-center items-end min-h-[350px] md:min-h-[400px] mb-8 md:mb-0">
+                <div className="relative w-full max-w-4xl h-[400px] md:h-[500px] flex items-end justify-center">
                     <AnimatePresence mode="popLayout">
                         {displayMagazines.map((mag, idx) => {
                             let x = 0;
@@ -134,16 +143,23 @@ export default function MagazineHero() {
                                     layoutId={mag.id}
                                     initial={{ opacity: 0, scale: 0.8, y: 100 }}
                                     animate={{
-                                        x,
+                                        x: isMobile && mag.position !== 'center' ? 0 : x,
                                         y,
-                                        scale,
+                                        scale: isMobile ? (mag.position === 'center' ? 1 : 0.8) : scale,
                                         zIndex,
                                         rotate,
-                                        opacity
+                                        opacity: isMobile && mag.position !== 'center' ? 0 : opacity
+                                    }}
+                                    whileHover={{
+                                        scale: 1, // Bring side cards to full size on hover
+                                        zIndex: 35, // Bring to very front (over floating card)
+                                        rotate: 0, // Straighten
+                                        y: -20, // Lift up slightly
+                                        transition: { duration: 0.3 }
                                     }}
                                     exit={{ opacity: 0, scale: 0.5 }}
                                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    className="absolute bottom-0 w-[280px] md:w-[340px] aspect-[3/4] rounded-xl shadow-2xl overflow-hidden cursor-pointer bg-neutral-100 group"
+                                    className={`absolute bottom-0 w-[240px] md:w-[340px] aspect-[3/4] rounded-xl shadow-2xl overflow-hidden cursor-pointer bg-neutral-100 group ${mag.position !== 'center' ? 'hidden md:block' : ''}`} // Hide side magazines on mobile for cleaner view
                                     onClick={() => mag.position === 'center' ? window.open(mag.pdfUrl, '_blank') : mag.position === 'left' ? handlePrev() : handleNext()}
                                 >
                                     <img
@@ -166,9 +182,9 @@ export default function MagazineHero() {
                 </div>
             </div>
 
-            {/* Floating Black Card */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-30">
-                <div className="bg-[#111] text-white rounded-[2rem] p-4 md:p-6 shadow-2xl flex flex-col md:flex-row items-center gap-6 md:gap-12">
+            {/* Floating Black Card - Relative on Mobile, Absolute on Desktop */}
+            <div className="relative md:absolute md:bottom-8 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:w-[95%] max-w-5xl z-30 px-4 md:px-0 mt-8 md:mt-0">
+                <div className="bg-[#111] text-white rounded-[2rem] p-6 shadow-2xl flex flex-col md:flex-row items-center gap-6 md:gap-12">
 
                     {/* CTA Block (Colored) */}
                     <div className="bg-dravida-red text-white p-6 rounded-[1.5rem] flex-shrink-0 w-full md:w-auto md:min-w-[280px] relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]">
@@ -188,32 +204,32 @@ export default function MagazineHero() {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="flex-1 grid grid-cols-3 gap-4 md:gap-8 w-full">
+                    <div className="flex-1 grid grid-cols-3 gap-2 md:gap-8 w-full">
                         <div className="text-center md:text-left">
                             <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 mb-1">
                                 <Calendar className="w-4 h-4" />
-                                <span className="text-xs uppercase font-bold tracking-wider">Heritage</span>
+                                <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider">Heritage</span>
                             </div>
-                            <div className="text-2xl md:text-3xl font-bold">100+</div>
-                            <div className="text-xs text-neutral-500 mt-1">Years of History</div>
+                            <div className="text-xl md:text-3xl font-bold">100+</div>
+                            <div className="text-[10px] md:text-xs text-neutral-500 mt-1">Years of History</div>
                         </div>
 
                         <div className="text-center md:text-left">
                             <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 mb-1">
                                 <FileText className="w-4 h-4" />
-                                <span className="text-xs uppercase font-bold tracking-wider">Archives</span>
+                                <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider">Archives</span>
                             </div>
-                            <div className="text-2xl md:text-3xl font-bold">{magazines.length}+</div>
-                            <div className="text-xs text-neutral-500 mt-1">Digital Issues</div>
+                            <div className="text-xl md:text-3xl font-bold">{magazines.length}+</div>
+                            <div className="text-[10px] md:text-xs text-neutral-500 mt-1">Digital Issues</div>
                         </div>
 
                         <div className="text-center md:text-left">
                             <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 mb-1">
                                 <Users className="w-4 h-4" />
-                                <span className="text-xs uppercase font-bold tracking-wider">Community</span>
+                                <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider">Community</span>
                             </div>
-                            <div className="text-2xl md:text-3xl font-bold">50k+</div>
-                            <div className="text-xs text-neutral-500 mt-1">Active Readers</div>
+                            <div className="text-xl md:text-3xl font-bold">50k+</div>
+                            <div className="text-[10px] md:text-xs text-neutral-500 mt-1">Active Readers</div>
                         </div>
                     </div>
                 </div>

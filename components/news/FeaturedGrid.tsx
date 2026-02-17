@@ -11,11 +11,10 @@ import { db } from "@/lib/firebase";
 interface FeaturedGridProps {
     // We keep these props optional now as we might fetch internally or accept initial data
     initialArticles?: any[];
-    quote: string;
-    quoteAuthor: string;
 }
 
-export default function FeaturedGrid({ quote: fallbackQuote, quoteAuthor: fallbackAuthor, initialArticles }: FeaturedGridProps) {
+export default function FeaturedGrid({ initialArticles }: FeaturedGridProps) {
+
     // Fetch 7 articles for the grid
     const { articles, loading } = useArticles(undefined, 7);
 

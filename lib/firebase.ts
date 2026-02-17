@@ -7,7 +7,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyCWI6Ic9C_lJknIBVifyBJtEXWUbquxpHM",
     authDomain: "diravida-thalaimurai.firebaseapp.com",
     projectId: "diravida-thalaimurai",
-    storageBucket: "diravida-thalaimurai.firebasestorage.app",
+    storageBucket: "diravida-thalaimurai.appspot.com",
     messagingSenderId: "486213751506",
     appId: "1:486213751506:web:268198533b16daa107530b",
     measurementId: "G-KETJJSJQMK"

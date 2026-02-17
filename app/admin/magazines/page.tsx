@@ -6,6 +6,7 @@ import { collection, query, orderBy, getDocs, deleteDoc, doc, updateDoc } from "
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/firebase";
 import { Plus, Trash2, Loader2, BookOpen, ExternalLink, Edit, X, Save, Upload } from "lucide-react";
+import { compressImage } from "@/lib/imageUtils";
 
 interface Magazine {
     id: string;
@@ -59,35 +60,45 @@ export default function MagazinesListPage() {
         setEditingMagazine({ ...magazine });
     };
 
-    const handleFileUpload = async (file: File | null, type: 'cover' | 'pdf') => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'cover' | 'pdf') => {
+        const file = e.target.files?.[0];
         if (!file || !editingMagazine) return;
+
         setUploadingField(type);
         try {
-            console.log(`Starting upload for ${type}: ${file.name}`);
-            const path = `magazines/${Date.now()}_${file.name}`;
-            const storageRef = ref(storage, path);
-            await uploadBytes(storageRef, file);
-            console.log("Upload complete, getting URL...");
-            const url = await getDownloadURL(storageRef);
-            console.log("URL retrieved:", url);
+            let resultUrl = "";
+
+            if (type === 'cover') {
+                // Convert cover image to optimized Base64
+                resultUrl = await compressImage(file);
+                console.log("Cover image converted to Base64");
+            } else {
+                // Upload PDF to Firebase Storage (keep as is due to size)
+                console.log(`Starting upload for PDF: ${file.name}`);
+                const path = `magazines/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                const storageRef = ref(storage, path);
+                await uploadBytes(storageRef, file);
+                console.log("PDF upload complete, getting URL...");
+                resultUrl = await getDownloadURL(storageRef);
+            }
 
             setEditingMagazine(prev => prev ? ({
                 ...prev,
-                [type === 'cover' ? 'coverUrl' : 'pdfUrl']: url
+                [type === 'cover' ? 'coverUrl' : 'pdfUrl']: resultUrl
             }) : null);
 
-            alert(`${type === 'cover' ? 'Cover image' : 'PDF'} uploaded successfully!`);
+            alert(`${type === 'cover' ? 'Cover image' : 'PDF'} processed successfully!`);
         } catch (error: any) {
-            console.error("Upload error details:", error);
-            // Show more specific error to user
+            console.error("Upload/Processing error:", error);
             const message = error?.message || "Unknown error";
             if (message.includes("unauthorized")) {
-                alert("Upload failed: Permission denied. Please check your login status.");
+                alert("Access denied. Check permissions.");
             } else {
-                alert(`Upload failed: ${message}`);
+                alert(`Failed: ${message}`);
             }
         } finally {
             setUploadingField(null);
+            e.target.value = ""; // Reset input to allow re-selection
         }
     };
 
@@ -268,7 +279,7 @@ export default function MagazinesListPage() {
                                             className="hidden"
                                             accept="image/*"
                                             disabled={!!uploadingField}
-                                            onChange={(e) => handleFileUpload(e.target.files?.[0] || null, 'cover')}
+                                            onChange={(e) => handleFileUpload(e, 'cover')}
                                         />
                                     </label>
                                 </div>
@@ -291,7 +302,7 @@ export default function MagazinesListPage() {
                                             className="hidden"
                                             accept=".pdf"
                                             disabled={!!uploadingField}
-                                            onChange={(e) => handleFileUpload(e.target.files?.[0] || null, 'pdf')}
+                                            onChange={(e) => handleFileUpload(e, 'pdf')}
                                         />
                                     </label>
                                 </div>

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/firebase";
+import { compressImage } from "@/lib/imageUtils";
 
 export default function NewMagazinePage() {
     const router = useRouter();
@@ -18,26 +19,39 @@ export default function NewMagazinePage() {
         pdfUrl: "",
     });
 
-    const handleFileUpload = async (file: File | null, type: 'cover' | 'pdf') => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'cover' | 'pdf') => {
+        const file = e.target.files?.[0];
         if (!file) return;
+
         setLoading(true);
         try {
-            const path = `magazines/${Date.now()}_${file.name}`;
-            const storageRef = ref(storage, path);
-            await uploadBytes(storageRef, file);
-            const url = await getDownloadURL(storageRef);
+            let url = "";
+
+            if (type === 'cover') {
+                // Convert image to optimized Base64
+                url = await compressImage(file);
+                console.log(`Cover image processed (Base64 length: ${url.length})`);
+            } else {
+                // For PDF, we still use Firebase Storage (Base64 is too large for Firestore)
+                const path = `magazines/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                const storageRef = ref(storage, path);
+                await uploadBytes(storageRef, file);
+                url = await getDownloadURL(storageRef);
+                console.log('PDF available at', url);
+            }
 
             setFormData(prev => ({
                 ...prev,
                 [type === 'cover' ? 'coverUrl' : 'pdfUrl']: url
             }));
 
-            alert(`${type === 'cover' ? 'Cover image' : 'PDF'} uploaded successfully!`);
+            alert(`${type === 'cover' ? 'Cover image' : 'PDF'} processed successfully!`);
         } catch (error) {
-            console.error("Upload error:", error);
-            alert("Upload failed. Please try again.");
+            console.error("Upload/Processing error:", error);
+            alert(`Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
         } finally {
             setLoading(false);
+            e.target.value = '';
         }
     };
 
@@ -114,7 +128,7 @@ export default function NewMagazinePage() {
                                 type="file"
                                 className="hidden"
                                 accept="image/*"
-                                onChange={(e) => handleFileUpload(e.target.files?.[0] || null, 'cover')}
+                                onChange={(e) => handleFileUpload(e, 'cover')}
                             />
                         </label>
                     </div>
@@ -138,7 +152,7 @@ export default function NewMagazinePage() {
                                 type="file"
                                 className="hidden"
                                 accept=".pdf"
-                                onChange={(e) => handleFileUpload(e.target.files?.[0] || null, 'pdf')}
+                                onChange={(e) => handleFileUpload(e, 'pdf')}
                             />
                         </label>
                     </div>
