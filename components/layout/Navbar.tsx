@@ -119,13 +119,6 @@ export default function Navbar() {
                                     {link.name}
                                 </Link>
                             ))}
-                            <Link
-                                href="/subscribe"
-                                className="mt-2 text-center bg-neutral-900 text-white py-3 rounded-xl font-bold"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                Subscribe Today
-                            </Link>
                         </div>
                     </div>
                 )
