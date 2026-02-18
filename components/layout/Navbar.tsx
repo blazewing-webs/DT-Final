@@ -55,22 +55,22 @@ export default function Navbar() {
             <div className={`px-4 md:px-8 transition-all duration-500 ${scrolled ? "py-2" : "py-2"}`}>
                 <div className="flex h-12 md:h-14 items-center justify-between relative">
 
-                    {/* Mobile Menu Button (Absolute Left on Mobile) */}
+                    {/* Mobile Menu Button (Absolute Right on Mobile) */}
                     <button
-                        className="lg:hidden absolute left-0 p-1 text-neutral-900"
+                        className="md:hidden absolute right-0 p-1 text-neutral-900 z-20"
                         onClick={() => setIsOpen(!isOpen)}
                         aria-label="Toggle menu"
                     >
                         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                     </button>
 
-                    {/* Left Nav links (Desktop) */}
-                    <div className="hidden lg:flex items-center justify-end flex-1 gap-4 xl:gap-6 pr-4 xl:pr-8 border-r border-transparent">
+                    {/* Left Nav links (Desktop & Tablet) */}
+                    <div className="hidden md:flex items-center justify-end flex-1 gap-3 lg:gap-4 xl:gap-6 pr-4 xl:pr-8 border-r border-transparent">
                         {leftLinks.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="text-neutral-800 text-xs font-bold uppercase tracking-wide hover:text-dravida-red transition-colors relative group py-2"
+                                className="text-neutral-800 text-[10px] lg:text-xs font-bold uppercase tracking-wide hover:text-dravida-red transition-colors relative group py-2"
                             >
                                 {link.name}
                                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-dravida-red transition-all duration-300 group-hover:w-full"></span>
@@ -78,21 +78,23 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    {/* Center Logo */}
-                    <div className="flex-shrink-0 flex items-center justify-center mx-auto lg:mx-4 z-10">
-                        <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-105 duration-300 relative">
-                            {/* Logo reduced */}
-                            <img src="/logo.jpeg" alt="Dravida Thalaimurai" className="h-10 md:h-12 w-auto object-contain drop-shadow-md" />
+                    {/* Center/Left Logo */}
+                    <div className="flex-shrink-0 flex items-center z-10 md:mx-4">
+                        <Link href="/" className="flex items-center gap-3 transition-transform hover:scale-105 duration-300 relative">
+                            <img src="/logo.jpeg" alt="Dravida Thalaimurai" className="h-9 md:h-11 lg:h-12 w-auto object-contain drop-shadow-md" />
+                            <span className="md:hidden font-extrabold text-[#991b1b] text-[13px] tracking-tight whitespace-nowrap">
+                                DRAVIDA THALAIMURAI
+                            </span>
                         </Link>
                     </div>
 
-                    {/* Right Nav links (Desktop) */}
-                    <div className="hidden lg:flex items-center justify-start flex-1 gap-4 xl:gap-6 pl-4 xl:pl-8 border-l border-transparent">
+                    {/* Right Nav links (Desktop & Tablet) */}
+                    <div className="hidden md:flex items-center justify-start flex-1 gap-3 lg:gap-4 xl:gap-6 pl-4 xl:pl-8 border-l border-transparent">
                         {rightLinks.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="text-neutral-800 text-xs font-bold uppercase tracking-wide hover:text-dravida-red transition-colors relative group py-2"
+                                className="text-neutral-800 text-[10px] lg:text-xs font-bold uppercase tracking-wide hover:text-dravida-red transition-colors relative group py-2"
                             >
                                 {link.name}
                                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-dravida-red transition-all duration-300 group-hover:w-full"></span>
@@ -107,7 +109,7 @@ export default function Navbar() {
             {/* Mobile Menu Overlay */}
             {
                 isOpen && (
-                    <div className="lg:hidden absolute top-full left-0 right-0 mt-4 mx-2 bg-white rounded-3xl shadow-2xl border border-neutral-100 p-4 flex flex-col gap-2 max-h-[80vh] overflow-y-auto">
+                    <div className="md:hidden absolute top-full left-0 right-0 mt-4 mx-2 bg-white rounded-3xl shadow-2xl border border-neutral-100 p-4 flex flex-col gap-2 max-h-[80vh] overflow-y-auto">
                         <div className="flex flex-col gap-1">
                             {navLinks.slice(1).map((link) => (
                                 <Link
