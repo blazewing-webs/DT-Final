@@ -1,17 +1,23 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Scale, Brain, ExternalLink } from "lucide-react";
+import { Users, Scale, Brain, ExternalLink, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+
 import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import PDFReaderModal from "@/components/shared/PDFReaderModal";
+
 
 export default function HeritageHero({ dictionary }: { dictionary?: any }) {
     const [magazines, setMagazines] = useState<any[]>([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [isMobile, setIsMobile] = useState(false);
+    const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
+
 
     const t = dictionary?.hero || {
         badge: "Daily News & Magazine",
@@ -137,6 +143,20 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                     >
                         {t.subtitle}
                     </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.6 }}
+                    >
+                        <Link
+                            href="/magazine"
+                            className="inline-flex items-center gap-2 px-8 py-4 bg-dravida-red text-white font-bold rounded-full hover:bg-black transition-all hover:scale-105 shadow-lg group"
+                        >
+                            View All Magazines
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </motion.div>
                 </div>
 
                 {/* Right Column: Carousel */}
@@ -190,7 +210,7 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                                     }}
                                     onTap={() => {
                                         if (item.position === 'center') {
-                                            if (item.pdfUrl) window.open(item.pdfUrl, '_blank');
+                                            if (item.pdfUrl) setSelectedPdf(item.pdfUrl);
                                         } else if (item.position === 'left') {
                                             handlePrev();
                                         } else {
@@ -228,7 +248,7 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         className="absolute bottom-8 w-[95%] max-w-lg bg-[#111]/95 text-white p-2 pr-6 rounded-full shadow-2xl flex items-center justify-between z-30 border border-white/10 backdrop-blur-md"
                     >
                         {/* Red Highlight Pill */}
-                        <div className="bg-dravida-red text-white py-2 px-4 rounded-full flex items-center gap-3 shadow-lg hover:scale-105 transition-transform cursor-pointer" onClick={() => window.open(displayItems[activeIndex].pdfUrl, '_blank')}>
+                        <div className="bg-dravida-red text-white py-2 px-4 rounded-full flex items-center gap-3 shadow-lg hover:scale-105 transition-transform cursor-pointer" onClick={() => displayItems[activeIndex].pdfUrl && setSelectedPdf(displayItems[activeIndex].pdfUrl)}>
                             <Users className="w-4 h-4 text-white" />
                             <div className="flex flex-col text-left">
                                 <span className="text-lg font-bold leading-none">50K+</span>
@@ -252,6 +272,12 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                 </div>
 
             </div>
+            {/* PDF Modal */}
+            <PDFReaderModal
+                isOpen={!!selectedPdf}
+                onClose={() => setSelectedPdf(null)}
+                pdfUrl={selectedPdf}
+            />
         </section>
     );
 }

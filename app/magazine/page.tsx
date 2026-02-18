@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Loader2, BookOpen, ExternalLink, Calendar } from "lucide-react";
+import { Loader2, BookOpen, Calendar, Download } from "lucide-react";
+import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageHeader from "@/components/shared/PageHeader";
+import PDFReaderModal from "@/components/shared/PDFReaderModal";
+
 
 interface Magazine {
     id: string;
@@ -16,9 +19,14 @@ interface Magazine {
     pdfUrl: string;
 }
 
+
+
 export default function MagazinePage() {
     const [magazines, setMagazines] = useState<Magazine[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
+    const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
 
     useEffect(() => {
         const fetchMagazines = async () => {
@@ -38,7 +46,48 @@ export default function MagazinePage() {
         };
 
         fetchMagazines();
+        fetchMagazines();
     }, []);
+
+    const handleDownload = async (e: React.MouseEvent, magazine: Magazine) => {
+        e.stopPropagation();
+        if (!magazine.pdfUrl) return;
+
+        setDownloadingId(magazine.id);
+
+        try {
+            // Special handling for Google Drive links
+            if (magazine.pdfUrl.includes("drive.google.com")) {
+                const match = magazine.pdfUrl.match(/\/d\/(.+?)(\/|$)/);
+                if (match && match[1]) {
+                    const fileId = match[1];
+                    const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+                    window.location.href = downloadUrl;
+                    setDownloadingId(null);
+                    return;
+                }
+            }
+
+            // Standard fetch download
+            const response = await fetch(magazine.pdfUrl);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = magazine.title ? `${magazine.title.replace(/\s+/g, '_')}.pdf` : 'magazine.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error("Download failed:", error);
+            window.open(magazine.pdfUrl, '_blank');
+        } finally {
+            setDownloadingId(null);
+        }
+    };
+
 
     return (
         <main className="min-h-screen bg-neutral-50 font-sans">
@@ -64,52 +113,73 @@ export default function MagazinePage() {
                         <p className="text-neutral-500">Check back later for our latest issues.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                        {magazines.map((mag) => (
-                            <div key={mag.id} className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow group">
-                                <div className="aspect-[3/4] bg-neutral-100 relative overflow-hidden">
-                                    {mag.coverUrl ? (
-                                        <img
-                                            src={mag.coverUrl}
-                                            alt={mag.title}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                    ) : (
-                                        <div className="flex items-center justify-center h-full">
-                                            <BookOpen className="w-12 h-12 text-neutral-300" />
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                            {magazines.map((mag) => (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    key={mag.id}
+                                    className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow group flex flex-col"
+                                >
+                                    <div className="aspect-[3/4] bg-neutral-100 relative overflow-hidden cursor-pointer" onClick={() => setSelectedPdf(mag.pdfUrl)}>
+                                        {mag.coverUrl ? (
+                                            <img
+                                                src={mag.coverUrl}
+                                                alt={mag.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <div className="flex items-center justify-center h-full">
+                                                <BookOpen className="w-12 h-12 text-neutral-300" />
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                            <span className="px-6 py-3 bg-white text-black font-bold rounded-full transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                                                View PDF
+                                            </span>
                                         </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <a
-                                            href={mag.pdfUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="px-6 py-3 bg-white text-black font-bold rounded-full transform translate-y-4 group-hover:translate-y-0 transition-transform"
-                                        >
-                                            View PDF
-                                        </a>
                                     </div>
-                                </div>
-                                <div className="p-5">
-                                    <div className="flex items-center gap-2 text-xs font-semibold text-dravida-red uppercase tracking-wider mb-2">
-                                        <Calendar className="w-3 h-3" />
-                                        {mag.month}
+                                    <div className="p-5 flex flex-col flex-grow">
+                                        <div className="flex items-center gap-2 text-xs font-semibold text-dravida-red uppercase tracking-wider mb-2">
+                                            <Calendar className="w-3 h-3" />
+                                            {mag.month}
+                                        </div>
+                                        <h3 className="text-lg font-bold text-neutral-900 leading-tight mb-3 line-clamp-2">
+                                            {mag.title}
+                                        </h3>
+                                        <div className="mt-auto flex items-center justify-between pt-4 border-t border-neutral-100">
+                                            <button
+                                                onClick={() => setSelectedPdf(mag.pdfUrl)}
+                                                className="inline-flex items-center gap-1 text-sm font-semibold text-neutral-600 hover:text-dravida-red transition-colors"
+                                            >
+                                                Read Magazine <BookOpen className="w-3 h-3" />
+                                            </button>
+
+                                            <button
+                                                onClick={(e) => handleDownload(e, mag)}
+                                                disabled={downloadingId === mag.id}
+                                                className="inline-flex items-center gap-1 text-sm font-semibold text-neutral-600 hover:text-dravida-red transition-colors disabled:opacity-50"
+                                            >
+                                                {downloadingId === mag.id ? (
+                                                    <>Downloading <Loader2 className="w-3 h-3 animate-spin" /></>
+                                                ) : (
+                                                    <>Download <Download className="w-3 h-3" /></>
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
-                                    <h3 className="text-lg font-bold text-neutral-900 leading-tight mb-3 line-clamp-2">
-                                        {mag.title}
-                                    </h3>
-                                    <a
-                                        href={mag.pdfUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1 text-sm font-semibold text-neutral-600 hover:text-dravida-red transition-colors"
-                                    >
-                                        Download / Read <ExternalLink className="w-3 h-3" />
-                                    </a>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* PDF Modal */}
+                        <PDFReaderModal
+                            isOpen={!!selectedPdf}
+                            onClose={() => setSelectedPdf(null)}
+                            pdfUrl={selectedPdf}
+                        />
+                    </>
                 )}
             </section>
             <Footer />
