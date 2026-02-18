@@ -17,6 +17,8 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
     const [loading, setLoading] = useState(true);
     const [isMobile, setIsMobile] = useState(false);
     const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
+
 
 
     const t = dictionary?.hero || {
@@ -143,20 +145,6 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                     >
                         {t.subtitle}
                     </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.6 }}
-                    >
-                        <Link
-                            href="/magazine"
-                            className="inline-flex items-center gap-2 px-8 py-4 bg-dravida-red text-white font-bold rounded-full hover:bg-black transition-all hover:scale-105 shadow-lg group"
-                        >
-                            View All Magazines
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                    </motion.div>
                 </div>
 
                 {/* Right Column: Carousel */}
@@ -171,13 +159,13 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                             let opacity = 1;
 
                             if (item.position === 'left') {
-                                x = isMobile ? -40 : -180;
+                                x = isMobile ? -85 : -180;
                                 y = isMobile ? 10 : 0;
                                 rotate = -12;
                                 zIndex = 10;
                                 scale = 0.85;
                             } else if (item.position === 'right') {
-                                x = isMobile ? 40 : 180;
+                                x = isMobile ? 85 : 180;
                                 y = isMobile ? 10 : 0;
                                 rotate = 12;
                                 zIndex = 10;
@@ -204,11 +192,18 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                                     dragElastic={0.1}
                                     whileDrag={{ cursor: "grabbing", scale: 1.05, zIndex: 100 }}
                                     whileHover={item.position === 'center' ? { scale: 1.05 } : {}}
+                                    onDragStart={() => setIsDragging(true)}
                                     onDragEnd={(e, { offset }) => {
-                                        if (offset.x < -50) handleNext();
-                                        else if (offset.x > 50) handlePrev();
+                                        // Small timeout to allow onTap to read dragging state if needed, 
+                                        // though mainly we just want to clear it after drag is done.
+                                        setTimeout(() => setIsDragging(false), 150);
+
+                                        if (offset.x < -30) handleNext(); // Reduce threshold slightly for responsive feel
+                                        else if (offset.x > 30) handlePrev();
                                     }}
                                     onTap={() => {
+                                        if (isDragging) return; // Prevent open if it was a drag
+
                                         if (item.position === 'center') {
                                             if (item.pdfUrl) setSelectedPdf(item.pdfUrl);
                                         } else if (item.position === 'left') {
@@ -248,13 +243,16 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         className="absolute bottom-8 w-[95%] max-w-lg bg-[#111]/95 text-white p-2 pr-6 rounded-full shadow-2xl flex items-center justify-between z-30 border border-white/10 backdrop-blur-md"
                     >
                         {/* Red Highlight Pill */}
-                        <div className="bg-dravida-red text-white py-2 px-4 rounded-full flex items-center gap-3 shadow-lg hover:scale-105 transition-transform cursor-pointer" onClick={() => displayItems[activeIndex].pdfUrl && setSelectedPdf(displayItems[activeIndex].pdfUrl)}>
-                            <Users className="w-4 h-4 text-white" />
+                        <Link
+                            href="/magazine"
+                            className="bg-dravida-red text-white py-2 px-4 rounded-full flex items-center gap-3 shadow-lg hover:scale-105 transition-transform cursor-pointer"
+                        >
+                            <ArrowRight className="w-4 h-4 text-white" />
                             <div className="flex flex-col text-left">
-                                <span className="text-lg font-bold leading-none">50K+</span>
-                                <span className="text-[10px] opacity-90">வாசகர்கள்</span>
+                                <span className="text-lg font-bold leading-none">View</span>
+                                <span className="text-[10px] opacity-90">Magazine</span>
                             </div>
-                        </div>
+                        </Link>
 
                         {/* Stats Group */}
                         <div className="flex items-center gap-6 justify-end flex-1 px-2">

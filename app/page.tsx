@@ -16,6 +16,7 @@ import DreamSection from "@/components/home/DreamSection";
 import MissionSection from "@/components/home/MissionSection";
 import YouthVoiceSection from "@/components/home/YouthVoiceSection";
 import QuotesGrid from "@/components/home/QuotesGrid";
+import FactCheckSection from "@/components/home/FactCheckSection";
 
 // Optional/Legacy (Keep if desired, otherwise comment out to streamline)
 import FAQSection from "@/components/home/FAQSection";
@@ -60,7 +61,11 @@ export default function Home() {
             <FAQSection /> 
             */}
 
-            {/* 10. Call to Action */}
+
+            {/* 10. Fact Check Section */}
+            <FactCheckSection />
+
+            {/* 11. Call to Action */}
             <JoinCTA />
 
             <Disclaimer />
