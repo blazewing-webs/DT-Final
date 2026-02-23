@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Documentation - Diravida Thalaimurai</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #991b1b;
+            /* Dravida Red - Client Color */
+            --brand-orange: #ea580c;
+            /* Blazewing Orange - Agency Color */
+            --primary-light: #fef2f2;
+            --text-dark: #111827;
+            --text-gray: #4b5563;
+            --text-light: #9ca3af;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --border-color: #e5e7eb;
+            --success-color: #059669;
+            --success-bg: #d1fae5;
+            --warning-color: #b45309;
+            --warning-bg: #fef3c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 25px 40px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Constructed Blazewing Logo */
+        .blazewing-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-symbol {
+            width: 48px;
+            height: 48px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-p {
+            color: var(--brand-orange);
+        }
+
+        .doc-label {
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .actions .btn {
+            background-color: var(--text-dark);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .actions .btn:hover {
+            background-color: black;
+            transform: translateY(-1px);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background-color: #f9fafb;
+            padding: 0 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            padding: 20px 0;
+            margin-right: 30px;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-gray);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--brand-orange);
+        }
+
+        .tab-btn.active {
+            color: var(--brand-orange);
+            font-weight: 700;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--brand-orange);
+        }
+
+        /* Content */
+        .content-area {
+            padding: 40px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Typography & Components */
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 24px;
+            background-color: var(--brand-orange);
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: var(--text-gray);
+        }
+
+        li::before {
+            content: "•";
+            color: var(--brand-orange);
+            font-weight: bold;
+            position: absolute;
+            left: 5px;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        li ul {
+            margin-top: 5px;
+            margin-bottom: 0;
+        }
+
+        /* Table Styles */
+        .table-container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f9fafb;
+            color: var(--text-dark);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-gray);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: var(--success-bg);
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background-color: var(--warning-bg);
+            color: var(--warning-color);
+        }
+
+        .row-total td {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .highlight-text {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .doc-footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                width: 100%;
+                border-radius: 8px;
+            }
+
+            header {
+                flex-direction: column;
+                padding: 20px;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .logo-area {
+                justify-content: center;
+            }
+
+            .blazewing-logo {
+                align-items: center !important;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .tabs {
+                padding: 0 20px;
+                justify-content: space-between;
+            }
+
+            .tab-btn {
+                margin-right: 0;
+                padding: 15px 5px;
+                font-size: 13px;
+                flex: 1;
+                text-align: center;
+            }
+
+            .content-area {
+                padding: 25px 20px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 500px;
+                /* Force table to scroll */
+            }
+
+            td,
+            th {
+                padding: 12px 15px;
+            }
+        }
+
+        /* Print Override */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+                border: none;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .tabs {
+                display: none;
+            }
+
+            .tab-content {
+                display: block !important;
+                margin-bottom: 40px;
+                page-break-after: always;
+            }
+
+            h2 {
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo-area">
+                <div class="blazewing-logo" style="flex-direction: column; align-items: flex-start; gap: 0;">
+                    <!-- Blazewing Official Logo -->
+                    <img src="https://blazewing.in/images/logo.png" alt="Blazewing Logo"
+                        style="height: 50px; display: block;">
+                    <span class="doc-label" style="margin-left: 2px;">Project Documentation</span>
+                </div>
+            </div>
+            <div class="actions no-print">
+                <button onclick="window.print()" class="btn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                        </path>
+                    </svg>
+                    Print Report
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <div class="tabs no-print">
+            <button class="tab-btn active" onclick="openTab('report')">Project Overview</button>
+            <button class="tab-btn" onclick="openTab('terms')">Legal & Terms</button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+
+            <!-- Tab 1: Project Report -->
+            <div id="report" class="tab-content active">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+                    <div>
+                        <span
+                            style="display:block; font-size: 12px; color: var(--text-light); text-transform: uppercase;">Client
+                            Project</span>
+                        <strong style="color: var(--text-dark); font-size: 18px;">Diravida Thalaimurai</strong>
+                    </div>
+                    <div style="text-align: right;">
+                        <span
+                            style="display:block; font-size: 12px; color: var(--text-light); text-transform: uppercase;">Generated
+                            On</span>
+                        <strong style="color: var(--text-dark);">6th September 2025</strong>
+                    </div>
+                </div>
+
+                <h2>1. Executive Summary</h2>
+                <p>The <strong>Diravida Thalaimurai Web Platform</strong> is a bespoke digital solution designed to
+                    serve as the central hub for the Dravidian ideology. Built using advanced web technologies, the
+                    platform ensures high performance, SEO optimization, and a seamless user experience across all
+                    devices. The system is designed to handle high traffic while providing an intuitive backend for
+                    non-technical administrators to manage content daily.</p>
+
+                <h2>2. Key Features & Implementation</h2>
+
+                <h3>A. User Interface (Frontend)</h3>
+                <ul>
+                    <li><strong>Mobile-First Design:</strong> Fully responsive layout that adapts perfectly to
+                        smartphones, tablets, and desktops.</li>
+                    <li><strong>Interactive Elements:</strong> Engaging features including a 3D Magazine Carousel,
+                        History Timeline, and User Polls.</li>
+                    <li><strong>Content Engine:</strong> Seamless reading experience for News Articles and an integrated
+                        PDF viewer for Digital Magazines.</li>
+                </ul>
+
+                <h3>B. Admin & Backend</h3>
+                <ul>
+                    <li><strong>Secure Dashboard:</strong> Protected admin panel with real-time analytics to track user
+                        engagement.</li>
+                    <li><strong>Easy Content Management:</strong> Simple tools to publish Articles, upload Magazines,
+                        and manage Team members without coding.</li>
+                    <li><strong>High Performance:</strong> Optimize cloud infrastructure ensuring fast load times and
+                        secure data storage.</li>
+                </ul>
+
+                <h2>3. Financial Summary</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Amount (INR)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Total Project Development Cost</strong></td>
+                                <td><span class="badge badge-success">Agreed</span></td>
+                                <td style="text-align: right;">₹48,000</td>
+                            </tr>
+                            <tr>
+                                <td>Payment #1 (Advance)<br><span style="font-size:11px; color:#6b7280;">Paid on: 6th
+                                        Sept 2025</span></td>
+                                <td><span class="badge badge-success">Paid</span></td>
+                                <td style="text-align: right; color: var(--success-color);">₹10,000</td>
+                            </tr>
+                            <tr>
+                                <td>Payment #2 (Milestone)<br><span style="font-size:11px; color:#6b7280;">Paid on: 7th
+                                        Jan 2026</span></td>
+                                <td><span class="badge badge-success">Paid</span></td>
+                                <td style="text-align: right; color: var(--success-color);">₹10,000</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td>Total Paid So Far</td>
+                                <td></td>
+                                <td style="text-align: right; font-weight: 600;">₹20,000</td>
+                            </tr>
+                            <tr class="row-total">
+                                <td><strong>Balance Due</strong></td>
+                                <td><span class="badge badge-warning">Pending</span></td>
+                                <td style="text-align: right;"><strong>₹28,000</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>4. Post-Launch Maintenance Service</h2>
+                <p><strong class="highlight-text">Monthly Subscription: ₹2,000 (Starts ONLY AFTER Launch)</strong></p>
+                <p>To ensure the long-term stability and security of the platform, the following maintenance services
+                    will be provided commencing from the official website launch date:</p>
+                <ul>
+                    <li><strong>24/7 Uptime Monitoring:</strong> Automated checks to ensure the site is always live.
+                    </li>
+                    <li><strong>Data Integrity:</strong> Weekly backups of the entire database and content repository.
+                    </li>
+                    <li><strong>Security Updates:</strong> Patching any vulnerabilities in the underlying framework or
+                        dependencies.</li>
+                    <li><strong>Technical Support:</strong> Direct line of support for server-related issues.</li>
+                </ul>
+            </div>
+
+            <!-- Tab 2: Terms & Conditions -->
+            <div id="terms" class="tab-content">
+                <p
+                    style="margin-bottom: 30px; padding: 15px; background-color: var(--primary-light); color: var(--text-dark); border-radius: 6px; font-size: 14px; border-left: 4px solid var(--brand-orange);">
+                    <strong>Agreement Note:</strong> These terms govern the professional relationship between
+                    <strong>Blazewing</strong> (The Developer) and <strong>Diravida Thalaimurai</strong> (The Client).
+                </p>
+
+                <h2>1. Authorization & Scope</h2>
+                <p>The client engages Blazewing to perform the work described in the "Executive Summary" and "Key
+                    Features" sections of this document. No other work is included unless specifically agreed upon in
+                    writing.</p>
+
+                <h2>2. Financial Terms & Launch Protocol</h2>
+                <ul>
+                    <li><strong>Payment Schedule:</strong> Payments shall be made according to the schedule outlined in
+                        the "Financial Summary".</li>
+                    <li><strong>Launch Condition:</strong> The project will be deployed to the live server or final
+                        files/credentials handed over ONLY after the <strong>full remaining balance</strong> has been
+                        cleared.</li>
+                    <li><strong>Late Payments:</strong> Invoices are due upon receipt. Work may be paused if payments
+                        are not received within 7 days of the milestone completion.</li>
+                </ul>
+
+                <h2>3. Refund Policy (No Refunds)</h2>
+                <p><strong>All payments are final.</strong></p>
+                <ul>
+                    <li><strong>Non-Refundable:</strong> Due to the nature of digital services and the time invested,
+                        any deposit, advance, or milestone payment made is strictly <strong>non-refundable</strong>
+                        under any circumstances.</li>
+                    <li><strong>Cancellation:</strong> If the client cancels the project midway, no refunds will be
+                        issued for work already completed or time reserved.</li>
+                </ul>
+
+                <h2>4. Client Responsibilities</h2>
+                <ul>
+                    <li><strong>Content:</strong> The client is responsible for providing all text, images, and media
+                        assets. The project timeline allows for a reasonable duration for content collection; delays in
+                        providing content may unavoidably delay the launch.</li>
+                    <li><strong>Feedback:</strong> Timely feedback (within 2-3 business days) is required to maintain
+                        the project schedule.</li>
+                </ul>
+
+                <h2>5. Revisions & Alterations</h2>
+                <p>The agreed scope includes <strong>two (2) rounds of revisions</strong> for the design and content
+                    adjustments.</p>
+                <ul>
+                    <li>"Revision" means minor changes to the presented work (e.g., font updates, color tweaks, text
+                        swaps).</li>
+                    <li><strong>Scope Creep:</strong> A "Revision" does not include the addition of new features, new
+                        pages, or significant layout changes not previously discussed. Such requests will be quoted
+                        separately.</li>
+                </ul>
+
+                <h2>6. Intellectual Property (IP)</h2>
+                <ul>
+                    <li><strong>Ownership:</strong> Upon receipt of full payment, the client is granted exclusive
+                        license/ownership of the custom code, designs, and content created for this project.</li>
+                    <li><strong>Portfolio Rights:</strong> Blazewing retains the right to display the project in their
+                        professional portfolio and link to the live site as a demonstration of their work.</li>
+                </ul>
+
+                <h2>7. Post-Launch Maintenance</h2>
+                <p>Maintenance services (if opted for) commence upon the official launch date.</p>
+                <ul>
+                    <li><strong>Services:</strong> Includes server uptime monitoring, regular backups, and security
+                        updates.</li>
+                    <li><strong>Exclusions:</strong> Major feature additions or redesigns are billed as new projects.
+                    </li>
+                    <li><strong>Payment:</strong> Maintenance fees are billed monthly or annually as per the agreed
+                        rate.</li>
+                </ul>
+
+                <h2>8. Confidentiality</h2>
+                <p>Blazewing acknowledges that they may receive confidential information (login credentials, business
+                    strategies) and agrees to keep such information secret and not to disclose it to any third party.
+                </p>
+
+                <h2>9. Limitation of Liability</h2>
+                <p>Blazewing is not liable for issues caused by third-party services (e.g., hosting provider downtime,
+                    API changes, domain quirks) or for any lost profits or damages arising from the use or inability to
+                    use the website.</p>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="doc-footer">
+                <p>Prepared by <strong>Blazewing</strong> for Diravida Thalaimurai</p>
+                <p style="margin-top: 5px; font-size: 11px; opacity: 0.7;">CONFIDENTIAL & PROPRIETARY &copy; 2026</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            var contents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove("active");
+            }
+            var buttons = document.getElementsByClassName("tab-btn");
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            var clickedBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(tabName));
+            if (clickedBtn) clickedBtn.classList.add("active");
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,8 +1,11 @@
 {
     "hero": {
         "badge": "Daily News & Magazine",
-        "title": "Dravida Thalaimurai",
-        "subtitle": "Voice of Youth | Path of Equality",
+        "title": "Diravida Thalaimurai",
+        "subtitle": "The Thinking Young Voice | The Path of Equality",
+        "description": "Beyond caste, religion, and gender, we stand for every human being's right to live with dignity as a human. The fearless voice that speaks aloud for justice, equality, and human dignity — that voice is Diravida Thalaimurai.",
+        "bullet1": "Thought is our weapon",
+        "bullet2": "Equality is our identity",
         "read_now": "Read Now",
         "scroll": "Scroll"
     },

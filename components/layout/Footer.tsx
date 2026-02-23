@@ -5,9 +5,11 @@ import { Facebook, Twitter, Instagram, Youtube, Mail, ArrowRight, MapPin, Phone 
 import { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer() {
     const [settings, setSettings] = useState<any>({});
+    const { isTamil } = useLanguage();
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -54,7 +56,7 @@ export default function Footer() {
                     <div className="space-y-6">
                         <div className="space-y-4">
                             <Link href="/" className="inline-block">
-                                <img src="/logo.jpeg" alt="Dravida Thalaimurai" className="h-20 w-auto object-contain rounded-lg bg-white p-2" />
+                                <img src="/logo.jpeg" alt="Diravida Thalaimurai" className="h-20 w-auto object-contain rounded-lg bg-white p-2" />
                             </Link>
                             <div className="h-1 w-12 bg-dravida-red rounded-full"></div>
                         </div>
@@ -131,11 +133,13 @@ export default function Footer() {
             <div className="bg-black py-6 border-t border-neutral-800">
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-neutral-500">
-                        <p>© {new Date().getFullYear()} திராவிடத் தலைமுறை. All rights reserved.</p>
+                        <div className="text-center md:text-left">
+                            <p>© {new Date().getFullYear()} – {isTamil ? "திராவிட தலைமுறை" : "Diravida Thalaimurai"}</p>
+                            <p className="text-xs text-neutral-600 mt-0.5">{isTamil ? "சிந்தனை ஒரு புரட்சி." : "Thought is a revolution."}</p>
+                        </div>
                         <div className="flex gap-6">
                             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
                             <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-                            <Link href="/sitemap" className="hover:text-white transition-colors">Sitemap</Link>
                         </div>
                     </div>
                 </div>

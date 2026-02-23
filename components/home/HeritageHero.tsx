@@ -9,7 +9,26 @@ import Link from "next/link";
 import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import PDFReaderModal from "@/components/shared/PDFReaderModal";
+import { useLanguage } from "@/contexts/LanguageContext";
 
+const heroText = {
+    tn: {
+        badge: "தினசரி செய்தி & இதழ்",
+        title: "திராவிட தலைமுறை",
+        subtitle: "சிந்திக்கும் இளம் குரல் | சமத்துவத்தின் பாதை",
+        description: "சாதி, மதம், பாலினம் என எந்த வேறுபாடுமின்றி மனிதன் மனிதனாக வாழ வேண்டிய உரிமையை உரக்க பேசும் இளம் தலைமுறையின் குரல்தான் திராவிட தலைமுறை.",
+        bullet1: "சிந்தனை எங்கள் ஆயுதம்",
+        bullet2: "சமத்துவமே எங்கள் அடையாளம்",
+    },
+    en: {
+        badge: "Daily News & Magazine",
+        title: "Diravida Thalaimurai",
+        subtitle: "The Thinking Young Voice | The Path of Equality",
+        description: "Beyond caste, religion, and gender, we stand for every human being's right to live with dignity. The fearless voice that speaks aloud for justice, equality, and human dignity — that voice is Diravida Thalaimurai.",
+        bullet1: "Thought is our weapon",
+        bullet2: "Equality is our identity",
+    },
+};
 
 export default function HeritageHero({ dictionary }: { dictionary?: any }) {
     const [magazines, setMagazines] = useState<any[]>([]);
@@ -20,12 +39,9 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
     const [isDragging, setIsDragging] = useState(false);
 
 
+    const { isTamil } = useLanguage();
+    const t = heroText[isTamil ? "tn" : "en"];
 
-    const t = dictionary?.hero || {
-        badge: "Daily News & Magazine",
-        title: "திராவிட தலைமுறை",
-        subtitle: "சிந்திக்கும் இளம் குரல் | சமத்துவத்தின் பாதை",
-    };
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -141,98 +157,139 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.8, delay: 0.4 }}
-                        className="text-neutral-600 text-base md:text-lg font-medium mb-10 max-w-lg"
+                        className="text-neutral-600 text-base md:text-lg font-semibold mb-4 max-w-lg"
                     >
                         {t.subtitle}
                     </motion.p>
+
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 0.55 }}
+                        className="text-neutral-500 text-sm md:text-base leading-relaxed mb-6 max-w-lg"
+                    >
+                        {t.description}
+                    </motion.p>
+
+                    <motion.ul
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.7 }}
+                        className="flex flex-col gap-2 mb-10"
+                    >
+                        <li className="flex items-center gap-2 text-sm md:text-base font-semibold text-amber-800">
+                            <span className="text-amber-600">👉</span> {t.bullet1}
+                        </li>
+                        <li className="flex items-center gap-2 text-sm md:text-base font-semibold text-amber-800">
+                            <span className="text-amber-600">👉</span> {t.bullet2}
+                        </li>
+                    </motion.ul>
                 </div>
 
                 {/* Right Column: Carousel */}
                 <div className="relative w-full h-[450px] lg:h-[550px] flex justify-center items-center perspective-[2000px] order-1 lg:order-2 mt-8 lg:mt-0">
                     <AnimatePresence initial={false} mode="popLayout">
-                        {visibleCards.map((item) => {
-                            let x = 0;
-                            let y = 0;
-                            let rotate = 0;
-                            let zIndex = 0;
-                            let scale = 0.9;
-                            let opacity = 1;
+                        {loading ? (
+                            // Loading Skeleton
+                            <motion.div
+                                key="skeleton"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute w-[200px] md:w-[260px] lg:w-[300px] aspect-[3/4] rounded-2xl shadow-xl bg-neutral-100 animate-pulse border-4 border-white z-20 flex items-center justify-center"
+                            >
+                                <div className="w-12 h-12 border-4 border-neutral-300 border-t-dravida-red rounded-full animate-spin"></div>
+                            </motion.div>
+                        ) : (
+                            visibleCards.map((item) => {
+                                let x = 0;
+                                let y = 0;
+                                let rotate = 0;
+                                let zIndex = 0;
+                                let scale = 0.9;
+                                let opacity = 1;
 
-                            if (item.position === 'left') {
-                                x = isMobile ? -85 : -180;
-                                y = isMobile ? 10 : 0;
-                                rotate = -12;
-                                zIndex = 10;
-                                scale = 0.85;
-                            } else if (item.position === 'right') {
-                                x = isMobile ? 85 : 180;
-                                y = isMobile ? 10 : 0;
-                                rotate = 12;
-                                zIndex = 10;
-                                scale = 0.85;
-                            } else {
-                                // Center
-                                x = 0;
-                                y = 0;
-                                rotate = 0;
-                                zIndex = 20;
-                                scale = 1;
-                            }
+                                if (item.position === 'left') {
+                                    x = isMobile ? -85 : -180;
+                                    y = isMobile ? 10 : 0;
+                                    rotate = -12;
+                                    zIndex = 10;
+                                    scale = 0.85;
+                                } else if (item.position === 'right') {
+                                    x = isMobile ? 85 : 180;
+                                    y = isMobile ? 10 : 0;
+                                    rotate = 12;
+                                    zIndex = 10;
+                                    scale = 0.85;
+                                } else {
+                                    // Center
+                                    x = 0;
+                                    y = 0;
+                                    rotate = 0;
+                                    zIndex = 20;
+                                    scale = 1;
+                                }
 
-                            return (
-                                <motion.div
-                                    key={item.key} // Stable key
-                                    layoutId={item.key} // Optional: Keep layoutId for morphing if it works well, else remove
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ x, y, rotate, zIndex, scale, opacity }}
-                                    exit={{ opacity: 0, scale: 0.5 }}
-                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    drag="x"
-                                    dragConstraints={{ left: 0, right: 0 }}
-                                    dragElastic={0.1}
-                                    whileDrag={{ cursor: "grabbing", scale: 1.05, zIndex: 100 }}
-                                    whileHover={item.position === 'center' ? { scale: 1.05 } : {}}
-                                    onDragStart={() => setIsDragging(true)}
-                                    onDragEnd={(e, { offset }) => {
-                                        // Small timeout to allow onTap to read dragging state if needed, 
-                                        // though mainly we just want to clear it after drag is done.
-                                        setTimeout(() => setIsDragging(false), 150);
+                                const isCenter = item.position === 'center';
 
-                                        if (offset.x < -30) handleNext(); // Reduce threshold slightly for responsive feel
-                                        else if (offset.x > 30) handlePrev();
-                                    }}
-                                    onTap={() => {
-                                        if (isDragging) return; // Prevent open if it was a drag
+                                return (
+                                    <motion.div
+                                        key={item.key} // Stable key
+                                        layoutId={item.key} // Optional: Keep layoutId for morphing if it works well, else remove
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ x, y, rotate, zIndex, scale, opacity }}
+                                        exit={{ opacity: 0, scale: 0.5 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                        drag={isCenter ? "x" : false}
+                                        dragConstraints={{ left: 0, right: 0 }}
+                                        dragElastic={0.1}
+                                        whileDrag={{ cursor: "grabbing", scale: 1.05, zIndex: 100 }}
+                                        whileHover={isCenter ? { scale: 1.05 } : {}}
+                                        onDragStart={() => setIsDragging(true)}
+                                        onDragEnd={(e, { offset }) => {
+                                            // Small timeout to allow onTap to read dragging state if needed, 
+                                            // though mainly we just want to clear it after drag is done.
+                                            setTimeout(() => setIsDragging(false), 150);
 
-                                        if (item.position === 'center') {
-                                            if (item.pdfUrl) setSelectedPdf(item.pdfUrl);
-                                        } else if (item.position === 'left') {
-                                            handlePrev();
-                                        } else {
-                                            handleNext();
-                                        }
-                                    }}
-                                    className="absolute w-[200px] md:w-[260px] lg:w-[300px] aspect-[3/4] rounded-2xl shadow-xl bg-white border-4 border-white cursor-grab"
-                                >
-                                    <div className="relative w-full h-full rounded-xl overflow-hidden bg-neutral-200">
-                                        <Image
-                                            src={item.coverUrl || item.image} // Handle both fallback and fetched
-                                            alt={item.title}
-                                            fill
-                                            className="object-cover pointer-events-none"
-                                        />
-                                        <div className="absolute inset-0 bg-black/10"></div>
-                                        {item.position === 'center' && (
-                                            <div className="absolute bottom-6 left-6 text-left text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                                                    Read PDF <ExternalLink className="w-3 h-3" />
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
+                                            if (offset.x < -30) handleNext(); // Reduce threshold slightly for responsive feel
+                                            else if (offset.x > 30) handlePrev();
+                                        }}
+                                        onTap={() => {
+                                            if (isDragging) return; // Prevent open if it was a drag
+
+                                            if (item.position === 'center') {
+                                                if (item.pdfUrl) setSelectedPdf(item.pdfUrl);
+                                            } else if (item.position === 'left') {
+                                                handlePrev();
+                                            } else {
+                                                handleNext();
+                                            }
+                                        }}
+                                        className="absolute w-[200px] md:w-[260px] lg:w-[300px] aspect-[3/4] rounded-2xl shadow-xl bg-white border-4 border-white cursor-grab"
+                                    >
+                                        <div className="relative w-full h-full rounded-xl overflow-hidden bg-neutral-200">
+                                            <Image
+                                                src={item.coverUrl || item.image || "/logo.jpeg"} // Handle both fallback and fetched
+                                                alt={item.title || "Magazine Cover"}
+                                                fill
+                                                className="object-cover pointer-events-none"
+                                                priority={isCenter} // Prioritize center image
+                                                loading={isCenter ? "eager" : "lazy"}
+                                                sizes="(max-width: 768px) 70vw, (max-width: 1200px) 40vw, 30vw"
+                                            />
+                                            <div className="absolute inset-0 bg-black/10"></div>
+                                            {isCenter && (
+                                                <div className="absolute bottom-6 left-6 text-left text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                                                        Read PDF <ExternalLink className="w-3 h-3" />
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                );
+                            })
+                        )}
                     </AnimatePresence>
 
                     {/* Compact Floating Stats Bar */}

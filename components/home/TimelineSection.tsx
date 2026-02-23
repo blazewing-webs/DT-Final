@@ -1,7 +1,15 @@
 "use client";
 
+import { useLanguage } from "@/contexts/LanguageContext";
+
 // Renamed from HistoryTimeline to TimelineSection to match existing import in page.tsx
 export default function TimelineSection() {
+    const { isTamil } = useLanguage();
+
+    const badge = isTamil ? "எங்கள் வரலாறு" : "Our Legacy";
+    const heading1 = isTamil ? "திராவிட" : "Dravidian";
+    const heading2 = isTamil ? "வரலாறு" : "History";
+    const leaderLabel = isTamil ? "தலைவர்" : "Leader";
     const events = [
         {
             year: "1925",
@@ -44,8 +52,8 @@ export default function TimelineSection() {
         <section className="py-24 bg-neutral-900 text-white relative" id="history">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-20">
-                    <span className="text-dravida-red font-bold uppercase tracking-widest text-sm mb-2 block">Our Legacy</span>
-                    <h2 className="text-4xl md:text-5xl font-black">திராவிட <span className="text-white">வரலாறு</span></h2>
+                    <span className="text-dravida-red font-bold uppercase tracking-widest text-sm mb-2 block">{badge}</span>
+                    <h2 className="text-4xl md:text-5xl font-black">{heading1} <span className="text-white">{heading2}</span></h2>
                 </div>
 
                 <div className="relative max-w-6xl mx-auto">

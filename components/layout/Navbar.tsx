@@ -2,129 +2,125 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Search, Zap } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "About Us", href: "/#about" },
-    { name: "Ideology", href: "/#ideology" },
-    { name: "History", href: "/#history" },
-    { name: "News", href: "/news" },
-    { name: "Magazines", href: "/magazine" },
-    { name: "Contact", href: "/contact" },
+const navItems = [
+    { tn: "முகப்பு", en: "Home", href: "/" },
+    { tn: "எங்களை பற்றி", en: "About Us", href: "/about" },
+    { tn: "சமூக நீதி", en: "Social Justice", href: "/social-justice" },
+    { tn: "அரசியல்", en: "Politics", href: "/politics" },
+    { tn: "பெண்கள் & பாலினம்", en: "Women & Gender", href: "/women" },
+    { tn: "இளைஞர் மேசை", en: "Youth Desk", href: "/youth-desk" },
+    { tn: "உண்மைச் சோதனை", en: "Fact Check", href: "/fact-check" },
+    { tn: "மாத இதழ்", en: "Monthly Magazine", href: "/magazine" },
+    { tn: "தொடர்புக்கு", en: "Contact Us", href: "/contact" },
 ];
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const { isTamil } = useLanguage();
 
     useEffect(() => {
         let ticking = false;
         const handleScroll = () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
-                    const isScrolled = window.scrollY > 20; // 20px threshold
-                    setScrolled(isScrolled);
+                    setScrolled(window.scrollY > 20);
                     ticking = false;
                 });
                 ticking = true;
             }
         };
-
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Filter out Home (implied by logo)
-    const filteredLinks = navLinks.filter(link => link.name !== "Home");
+    const displayLinks = navItems.filter(l => l.href !== "/");
+    const midPoint = Math.ceil(displayLinks.length / 2);
+    const leftLinks = displayLinks.slice(0, midPoint);
+    const rightLinks = displayLinks.slice(midPoint);
 
-    // Split links into left and right
-    const midPoint = Math.ceil(filteredLinks.length / 2);
-    const leftLinks = filteredLinks.slice(0, midPoint);
-    const rightLinks = filteredLinks.slice(midPoint);
+    const linkCls =
+        "text-neutral-800 text-[9px] lg:text-[10px] xl:text-xs font-bold uppercase tracking-wide hover:text-dravida-red transition-colors relative group py-2 whitespace-nowrap";
+    const underline =
+        "absolute bottom-0 left-0 w-0 h-0.5 bg-dravida-red transition-all duration-300 group-hover:w-full";
 
     return (
         <nav
-            // Changed positioning method: inset-x-0 mx-auto avoids transform jitters
-            // Transition: smooth width and position matching
-            className={`fixed z-50 font-sans transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) inset-x-0 mx-auto ${scrolled
-                ? "top-0 w-full max-w-none rounded-none border-b border-neutral-200 bg-white/95 backdrop-blur-lg shadow-md"
-                : "top-4 w-[95%] md:w-[98%] max-w-7xl rounded-full border border-neutral-200/50 bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+            className={`fixed z-50 font-sans transition-all duration-500 inset-x-0 mx-auto ${scrolled
+                    ? "top-0 w-full rounded-none border-b border-neutral-200 bg-white/95 backdrop-blur-lg shadow-md"
+                    : "top-4 w-[98%] max-w-screen-2xl rounded-full border border-neutral-200/50 bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
                 }`}
         >
-            <div className={`px-4 md:px-8 transition-all duration-500 ${scrolled ? "py-2" : "py-2"}`}>
+            <div className="px-3 md:px-6 py-2">
                 <div className="flex h-12 md:h-14 items-center justify-between relative">
 
-                    {/* Mobile Menu Button (Absolute Right on Mobile) */}
-                    <button
-                        className="md:hidden absolute right-0 p-1 text-neutral-900 z-20"
-                        onClick={() => setIsOpen(!isOpen)}
-                        aria-label="Toggle menu"
-                    >
-                        {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                    </button>
+                    {/* Mobile: Hamburger only */}
+                    <div className="md:hidden flex items-center gap-2 absolute right-0 z-20">
+                        <button
+                            className="p-1 text-neutral-900"
+                            onClick={() => setIsOpen(!isOpen)}
+                            aria-label="Toggle menu"
+                        >
+                            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                        </button>
+                    </div>
 
-                    {/* Left Nav links (Desktop & Tablet) */}
-                    <div className="hidden md:flex items-center justify-end flex-1 gap-3 lg:gap-4 xl:gap-6 pr-4 xl:pr-8 border-r border-transparent">
-                        {leftLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="text-neutral-800 text-[10px] lg:text-xs font-bold uppercase tracking-wide hover:text-dravida-red transition-colors relative group py-2"
-                            >
-                                {link.name}
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-dravida-red transition-all duration-300 group-hover:w-full"></span>
+                    {/* Left nav (desktop) */}
+                    <div className="hidden md:flex items-center justify-end flex-1 gap-2 lg:gap-3 xl:gap-5 pr-3 xl:pr-6">
+                        {leftLinks.map(link => (
+                            <Link key={link.href} href={link.href} className={linkCls}>
+                                {isTamil ? link.tn : link.en}
+                                <span className={underline} />
                             </Link>
                         ))}
                     </div>
 
-                    {/* Center/Left Logo */}
-                    <div className="flex-shrink-0 flex items-center z-10 md:mx-4">
-                        <Link href="/" className="flex items-center gap-3 transition-transform hover:scale-105 duration-300 relative">
-                            <img src="/logo.jpeg" alt="Dravida Thalaimurai" className="h-9 md:h-11 lg:h-12 w-auto object-contain drop-shadow-md" />
-                            <span className="md:hidden font-extrabold text-[#991b1b] text-[13px] tracking-tight whitespace-nowrap">
-                                DRAVIDA THALAIMURAI
+                    {/* Logo (centre) */}
+                    <div className="flex-shrink-0 flex items-center z-10 md:mx-3">
+                        <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-105 duration-300">
+                            <img
+                                src="/logo.jpeg"
+                                alt="திராவிட தலைமுறை"
+                                className="h-9 md:h-11 lg:h-12 w-auto object-contain drop-shadow-md"
+                            />
+                            <span className="md:hidden font-extrabold text-[#991b1b] text-[12px] tracking-tight whitespace-nowrap leading-tight max-w-[120px]">
+                                {isTamil ? "திராவிட தலைமுறை" : "DIRAVIDA THALAIMURAI"}
                             </span>
                         </Link>
                     </div>
 
-                    {/* Right Nav links (Desktop & Tablet) */}
-                    <div className="hidden md:flex items-center justify-start flex-1 gap-3 lg:gap-4 xl:gap-6 pl-4 xl:pl-8 border-l border-transparent">
-                        {rightLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="text-neutral-800 text-[10px] lg:text-xs font-bold uppercase tracking-wide hover:text-dravida-red transition-colors relative group py-2"
-                            >
-                                {link.name}
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-dravida-red transition-all duration-300 group-hover:w-full"></span>
+                    {/* Right nav (desktop) */}
+                    <div className="hidden md:flex items-center justify-start flex-1 gap-2 lg:gap-3 xl:gap-5 pl-3 xl:pl-6">
+                        {rightLinks.map(link => (
+                            <Link key={link.href} href={link.href} className={linkCls}>
+                                {isTamil ? link.tn : link.en}
+                                <span className={underline} />
                             </Link>
                         ))}
                     </div>
-
                 </div>
             </div>
 
-
-            {/* Mobile Menu Overlay */}
-            {
-                isOpen && (
-                    <div className="md:hidden absolute top-full left-0 right-0 mt-4 mx-2 bg-white rounded-3xl shadow-2xl border border-neutral-100 p-4 flex flex-col gap-2 max-h-[80vh] overflow-y-auto">
-                        <div className="flex flex-col gap-1">
-                            {navLinks.slice(1).map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className="text-lg font-bold text-neutral-800 py-3 px-4 rounded-xl hover:bg-neutral-50 hover:text-dravida-red transition-all"
-                                    onClick={() => setIsOpen(false)}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                        </div>
+            {/* Mobile dropdown */}
+            {isOpen && (
+                <div className="md:hidden absolute top-full left-0 right-0 mt-2 mx-2 bg-white rounded-3xl shadow-2xl border border-neutral-100 overflow-hidden">
+                    <div className="p-4 flex flex-col gap-1 max-h-[72vh] overflow-y-auto">
+                        {navItems.map(link => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className="text-base font-bold text-neutral-800 py-3 px-4 rounded-xl hover:bg-red-50 hover:text-dravida-red transition-all"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                {isTamil ? link.tn : link.en}
+                            </Link>
+                        ))}
                     </div>
-                )
-            }
-        </nav >
+                </div>
+            )}
+        </nav>
     );
 }
