@@ -148,7 +148,7 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-6 tracking-tight drop-shadow-sm leading-[1.1]"
                     >
-                        <span className="text-dravida-red drop-shadow-sm block">
+                        <span className="bg-gradient-to-r from-[#6b1414] via-[#991b1b] to-[#b91c1c] bg-clip-text text-transparent drop-shadow-sm block pb-2">
                             {t.title}
                         </span>
                     </motion.h1>
