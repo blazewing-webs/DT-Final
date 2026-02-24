@@ -123,7 +123,7 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
             {/* Background */}
             <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-50"></div>
-                <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[120px]"></div>
+                <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]"></div>
                 <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-dravida-red/5 rounded-full blur-[100px]"></div>
             </div>
 
@@ -137,7 +137,7 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         transition={{ duration: 0.8 }}
                         className="mb-6"
                     >
-                        <span className="bg-amber-100 border border-amber-200 text-amber-800 px-4 py-1.5 rounded-full text-xs tracking-[0.2em] uppercase font-semibold text-shadow-sm">
+                        <span className="bg-red-50 border border-red-100 text-dravida-red px-4 py-1.5 rounded-full text-xs tracking-[0.2em] uppercase font-semibold text-shadow-sm">
                             {t.badge}
                         </span>
                     </motion.div>
@@ -148,7 +148,7 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-6 tracking-tight drop-shadow-sm leading-[1.1]"
                     >
-                        <span className="bg-gradient-to-r from-amber-700 via-amber-900 to-amber-700 bg-clip-text text-transparent filter drop-shadow-sm block">
+                        <span className="text-dravida-red drop-shadow-sm block">
                             {t.title}
                         </span>
                     </motion.h1>
@@ -177,11 +177,11 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         transition={{ duration: 0.8, delay: 0.7 }}
                         className="flex flex-col gap-2 mb-10"
                     >
-                        <li className="flex items-center gap-2 text-sm md:text-base font-semibold text-amber-800">
-                            <span className="text-amber-600">👉</span> {t.bullet1}
+                        <li className="flex items-center gap-2 text-sm md:text-base font-semibold text-neutral-900">
+                            <span className="text-blue-600">👉</span> {t.bullet1}
                         </li>
-                        <li className="flex items-center gap-2 text-sm md:text-base font-semibold text-amber-800">
-                            <span className="text-amber-600">👉</span> {t.bullet2}
+                        <li className="flex items-center gap-2 text-sm md:text-base font-semibold text-neutral-900">
+                            <span className="text-blue-600">👉</span> {t.bullet2}
                         </li>
                     </motion.ul>
                 </div>

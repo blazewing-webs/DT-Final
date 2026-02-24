@@ -108,8 +108,8 @@ export default function PolicyContent() {
     return (
         <div id="policy" className="bg-neutral-50 relative overflow-hidden py-24 sm:py-32">
             {/* Background elements */}
-            <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[800px] h-[800px] bg-red-50/40 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-1/3 left-0 translate-y-1/3 -translate-x-1/3 w-[600px] h-[600px] bg-neutral-200/40 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[800px] h-[800px] bg-red-500/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-1/3 left-0 translate-y-1/3 -translate-x-1/3 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="container mx-auto px-6 lg:px-8 max-w-7xl relative z-10">
 
@@ -152,7 +152,7 @@ export default function PolicyContent() {
                             <Zap className="w-40 h-40" />
                         </div>
                         <div className="relative z-10">
-                            <Zap className="text-amber-400 w-10 h-10 mb-8" />
+                            <Zap className="text-red-500 w-10 h-10 mb-8" />
                             <h3 className="text-3xl lg:text-4xl font-black mb-8">{t.standTitle}</h3>
                             <p className="text-xl lg:text-2xl text-neutral-300 leading-relaxed font-medium mb-8">
                                 {t.standBody1}
@@ -232,14 +232,14 @@ export default function PolicyContent() {
                     </motion.div>
 
                     {/* Unheard Voices */}
-                    <motion.div variants={fadeUp} className="bg-white rounded-[2rem] p-8 lg:p-10 border border-neutral-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col hover:-translate-y-1 transition-transform duration-500">
-                        <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-8">
+                    <motion.div variants={fadeUp} className="bg-neutral-900 text-white rounded-[2rem] p-8 lg:p-10 border border-neutral-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col hover:-translate-y-1 transition-transform duration-500">
+                        <div className="w-14 h-14 bg-white/10 text-white rounded-2xl flex items-center justify-center mb-8">
                             <Megaphone className="w-7 h-7" />
                         </div>
-                        <h3 className="text-2xl font-black text-neutral-900 mb-6">{t.voicesTitle}</h3>
+                        <h3 className="text-2xl font-black text-white mb-6">{t.voicesTitle}</h3>
                         <div className="space-y-6 flex-1 flex flex-col justify-center">
-                            <p className="text-neutral-500 font-bold tracking-wide uppercase text-sm border-b border-neutral-100 pb-4">{t.voicesBody1}</p>
-                            <p className="text-emerald-950 font-black leading-relaxed text-xl">{t.voicesBody2}</p>
+                            <p className="text-neutral-400 font-bold tracking-wide uppercase text-sm border-b border-white/10 pb-4">{t.voicesBody1}</p>
+                            <p className="text-white font-black leading-relaxed text-xl">{t.voicesBody2}</p>
                         </div>
                     </motion.div>
                 </motion.div>
@@ -253,35 +253,35 @@ export default function PolicyContent() {
                     className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-24"
                 >
                     {/* Holding Power Accountable */}
-                    <motion.div variants={fadeUp} className="bg-amber-50 rounded-[2rem] p-8 lg:p-12 border border-amber-100 flex flex-col justify-center relative overflow-hidden group">
-                        <div className="absolute -bottom-10 -right-10 opacity-10 text-amber-500 group-hover:scale-110 transition-transform duration-500">
+                    <motion.div variants={fadeUp} className="bg-red-50 rounded-[2rem] p-8 lg:p-12 border border-red-100 flex flex-col justify-center relative overflow-hidden group">
+                        <div className="absolute -bottom-10 -right-10 opacity-10 text-red-500 group-hover:scale-110 transition-transform duration-500">
                             <Scale className="w-64 h-64" />
                         </div>
                         <div className="relative z-10">
-                            <Scale className="w-12 h-12 text-amber-600 mb-8" />
+                            <Scale className="w-12 h-12 text-dravida-red mb-8" />
                             <h3 className="text-3xl font-black text-neutral-900 mb-6">{t.powerTitle}</h3>
-                            <p className="text-amber-900/80 font-medium leading-relaxed mb-8 text-xl">
+                            <p className="text-neutral-900/80 font-medium leading-relaxed mb-8 text-xl">
                                 {t.powerBody1}
                             </p>
-                            <div className="flex items-center gap-5 p-6 bg-white rounded-2xl shadow-sm border border-amber-100/50">
-                                <ShieldCheck className="w-8 h-8 text-amber-500 shrink-0" />
-                                <p className="font-black text-amber-950 text-lg leading-tight">{t.powerBody2}</p>
+                            <div className="flex items-center gap-5 p-6 bg-white rounded-2xl shadow-sm border border-red-100/50">
+                                <ShieldCheck className="w-8 h-8 text-dravida-red shrink-0" />
+                                <p className="font-black text-neutral-900 text-lg leading-tight">{t.powerBody2}</p>
                             </div>
                         </div>
                     </motion.div>
 
                     {/* Why Reading Matters */}
-                    <motion.div variants={fadeUp} className="bg-indigo-50 rounded-[2rem] p-8 lg:p-12 border border-indigo-100 flex flex-col justify-center relative overflow-hidden group">
-                        <div className="absolute -bottom-10 -right-10 opacity-5 text-indigo-500 group-hover:scale-110 transition-transform duration-500">
+                    <motion.div variants={fadeUp} className="bg-blue-50 rounded-[2rem] p-8 lg:p-12 border border-blue-100 flex flex-col justify-center relative overflow-hidden group">
+                        <div className="absolute -bottom-10 -right-10 opacity-5 text-blue-500 group-hover:scale-110 transition-transform duration-500">
                             <Lightbulb className="w-64 h-64" />
                         </div>
                         <div className="relative z-10">
-                            <Lightbulb className="w-12 h-12 text-indigo-600 mb-8" />
+                            <Lightbulb className="w-12 h-12 text-blue-600 mb-8" />
                             <h3 className="text-3xl font-black text-neutral-900 mb-6">{t.readingTitle}</h3>
-                            <p className="text-indigo-900/80 font-medium leading-relaxed mb-8 text-xl">
+                            <p className="text-neutral-900/80 font-medium leading-relaxed mb-8 text-xl">
                                 {t.readingBody1}
                             </p>
-                            <div className="bg-indigo-600 text-white font-black text-xl lg:text-2xl p-6 lg:p-8 rounded-2xl shadow-lg border border-indigo-700/50 flex gap-4 items-center">
+                            <div className="bg-blue-600 text-white font-black text-xl lg:text-2xl p-6 lg:p-8 rounded-2xl shadow-lg border border-blue-700/50 flex gap-4 items-center">
                                 <span className="text-3xl shrink-0">👉</span>
                                 {t.readingBody2}
                             </div>
