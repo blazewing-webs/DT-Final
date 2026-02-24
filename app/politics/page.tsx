@@ -19,6 +19,53 @@ const content = {
         covers: ["சமூக நீதி அரசியல்", "இடஒதுக்கீடு & சட்ட மாற்றங்கள்", "மாநில சுயாட்சி", "தேர்தல் & ஜனநாயகம்", "அதிகார மையப்படுத்தல்", "மக்கள் உரிமைகள்"],
         articlesTitle: "📰 முக்கிய அரசியல் செய்திகள்",
         empty: "செய்திகள் விரைவில்...",
+        featuredStories: [
+            {
+                id: "mock1",
+                title: "இடஒதுக்கீடு அரசியல் – உரிமையா? இலவசமா?",
+                excerpt: "இடஒதுக்கீடு என்பது சமூக நீதி கருவியா அல்லது அரசியல் வாக்கு ஆயுதமா என்ற விவாதம் மீண்டும் தீவிரமாகியுள்ளது.",
+                image: "https://images.unsplash.com/photo-1541872516-6cbf204e92b3?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "அரசியல் (Politics)",
+                author: "திராவிட தலைமுறை குறிப்பு"
+            },
+            {
+                id: "mock2",
+                title: "மாநில உரிமைகள் vs மத்திய அதிகாரம்",
+                excerpt: "மாநிலங்களின் அதிகாரங்கள் மெல்ல மெல்ல மத்திய அரசிடம் குவிக்கப்படுகிறதா? கூட்டாட்சியின் எதிர்காலம் கேள்விக்குறியாகியுள்ளது.",
+                image: "https://images.unsplash.com/photo-1572949645841-094f3a9c4c94?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "அரசியல் (Politics)",
+                author: "திராவிட தலைமுறை குறிப்பு"
+            },
+            {
+                id: "mock3",
+                title: "தேர்தல் வாக்குறுதிகள் – நிறைவேற்றலா? மறப்பா?",
+                excerpt: "வேலைவாய்ப்பு, கல்வி, சமூக நலன் என்ற வாக்குறுதிகள் தேர்தலுக்குப் பின் எங்கே போகின்றன? மக்கள் எழுப்பும் கேள்விகள்.",
+                image: "https://images.unsplash.com/photo-1529683693425-4c07920abfb6?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "அரசியல் (Politics)",
+                author: "திராவிட தலைமுறை குறிப்பு"
+            },
+            {
+                id: "mock4",
+                title: "எதிர்க்கட்சியின் குரல் – கேட்கப்படுகிறதா?",
+                excerpt: "நாடாளுமன்றம் மற்றும் சட்டமன்றங்களில் எதிர்க்கட்சிகள் எழுப்பும் கேள்விகள் உண்மையில் விவாதிக்கப்படுகிறதா? ஜனநாயகத்தின் நிலை.",
+                image: "https://images.unsplash.com/photo-1536647413620-318e8df6ffbe?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "அரசியல் (Politics)",
+                author: "திராவிட தலைமுறை குறிப்பு"
+            },
+            {
+                id: "mock5",
+                title: "அரசியல் & ஊடக சுதந்திரம்",
+                excerpt: "அரசியல் அழுத்தங்கள் ஊடகங்களின் சுதந்திரத்தை மூச்சுத்திணற வைக்கிறதா? உண்மை செய்திகளின் எதிர்காலம் ஆபத்தில் உள்ளதா?",
+                image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "அரசியல் (Politics)",
+                author: "திராவிட தலைமுறை குறிப்பு"
+            }
+        ]
     },
     en: {
         pageTitle: "Political News",
@@ -30,6 +77,53 @@ const content = {
         covers: ["Politics of social justice", "Reservation & legal reforms", "State autonomy", "Elections & democracy", "Centralisation of power", "People's rights"],
         articlesTitle: "📰 Featured Political Stories",
         empty: "Stories coming soon...",
+        featuredStories: [
+            {
+                id: "mock1",
+                title: "Reservation Politics — Right or Freebie?",
+                excerpt: "Is reservation a tool of social justice, or has it become a political weapon for votes? The debate has once again intensified.",
+                image: "https://images.unsplash.com/photo-1541872516-6cbf204e92b3?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "Political News",
+                author: "Editorial Team"
+            },
+            {
+                id: "mock2",
+                title: "State Rights vs Central Power",
+                excerpt: "Are the powers of states gradually being concentrated in the hands of the central government? The future of federalism is under question.",
+                image: "https://images.unsplash.com/photo-1572949645841-094f3a9c4c94?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "Political News",
+                author: "Editorial Team"
+            },
+            {
+                id: "mock3",
+                title: "Election Promises — Fulfilled or Forgotten?",
+                excerpt: "Promises related to employment, education, and social welfare — where do they go after elections? Questions raised by the people.",
+                image: "https://images.unsplash.com/photo-1529683693425-4c07920abfb6?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "Political News",
+                author: "Editorial Team"
+            },
+            {
+                id: "mock4",
+                title: "The Voice of the Opposition — Is It Being Heard?",
+                excerpt: "Are the questions raised by opposition parties in Parliament and legislative assemblies actually being debated? The state of democracy under scrutiny.",
+                image: "https://images.unsplash.com/photo-1536647413620-318e8df6ffbe?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "Political News",
+                author: "Editorial Team"
+            },
+            {
+                id: "mock5",
+                title: "Politics & Media Freedom",
+                excerpt: "Are political pressures suffocating media freedom? Is the future of truthful journalism at risk?",
+                image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80",
+                date: "Feb 2026",
+                category: "Political News",
+                author: "Editorial Team"
+            }
+        ]
     },
 };
 
@@ -73,12 +167,24 @@ export default function PoliticsPage() {
                     <div className="h-64 flex items-center justify-center">
                         <Loader2 className="h-8 w-8 animate-spin text-neutral-400" />
                     </div>
-                ) : articles.length === 0 ? (
-                    <div className="text-center py-12 text-neutral-500">
-                        <p>{t.empty}</p>
-                    </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {/* Display featured mocked stories first */}
+                        {t.featuredStories.map((article) => (
+                            <NewsCard
+                                key={article.id}
+                                title={article.title}
+                                excerpt={article.excerpt}
+                                image={article.image}
+                                category={article.category}
+                                author={article.author}
+                                date={article.date}
+                                href={`/`}
+                                variant="standard"
+                                className="h-full"
+                            />
+                        ))}
+                        {/* Display real articles directly below */}
                         {articles.map((article) => (
                             <NewsCard
                                 key={article.id}

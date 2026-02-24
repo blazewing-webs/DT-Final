@@ -132,10 +132,10 @@ export default function Footer() {
             {/* Bottom Bar */}
             <div className="bg-black py-6 border-t border-neutral-800">
                 <div className="container mx-auto px-4 md:px-6">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-neutral-500">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-neutral-500 font-medium">
                         <div className="text-center md:text-left">
-                            <p>© {new Date().getFullYear()} – {isTamil ? "திராவிட தலைமுறை" : "Diravida Thalaimurai"}</p>
-                            <p className="text-xs text-neutral-600 mt-0.5">{isTamil ? "சிந்தனை ஒரு புரட்சி." : "Thought is a revolution."}</p>
+                            <p>© 2026 – {isTamil ? "திராவிட தலைமுறை" : "Diravida Thalaimurai"}</p>
+                            <p className="text-xs text-neutral-400 mt-1 uppercase tracking-widest">{isTamil ? "சிந்தனை ஒரு புரட்சி." : "Thought is a revolution."}</p>
                         </div>
                         <div className="flex gap-6">
                             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>

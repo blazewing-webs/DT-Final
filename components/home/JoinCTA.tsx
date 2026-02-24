@@ -10,8 +10,8 @@ const text = {
         btn1: "இப்போதே இணையுங்கள்",
         btn2: "எங்கள் திட்டங்கள்",
         future: ["✨ Podcast தொடக்கம்", "📢 தமிழ் Blog Expansion", "🎓 மாணவர்களுக்கான Workshops"],
-        disclaimer: "இந்த website கல்வி மற்றும் சமூக விழிப்புணர்வுக்காக மட்டும் உருவாக்கப்பட்டுள்ளது. எந்த அரசியல் கட்சியையும் பிரதிநிதித்துவப்படுத்தாது.",
-        note: "குறிப்பு:",
+        disclaimer: "இந்த இணையதளத்தில் வெளியிடப்படும் கருத்துகள், அந்த எழுத்தாளரின் தனிப்பட்ட கருத்தாக இருக்கலாம். திராவிட தலைமுறை எந்த சட்டப்பொறுப்பையும் ஏற்காது.",
+        note: "பொறுப்புத் துறப்பு:",
     },
     en: {
         heading: "Ready to Think?",
@@ -19,8 +19,8 @@ const text = {
         btn1: "Join Us Now",
         btn2: "Our Initiatives",
         future: ["✨ Podcast Launch", "📢 Tamil Blog Expansion", "🎓 Workshops for Students"],
-        disclaimer: "This website is created solely for educational and social awareness purposes. It does not represent any political party.",
-        note: "Note:",
+        disclaimer: "The views and opinions expressed on this website are solely those of the respective authors. Diravida Thalaimurai does not accept any legal responsibility for such individual opinions or expressions.",
+        note: "Disclaimer:",
     },
 };
 

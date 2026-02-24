@@ -5,16 +5,14 @@ import Footer from "@/components/layout/Footer";
 
 // Existing Components
 import HeritageHero from "@/components/home/HeritageHero";
-import IdeologySection from "@/components/home/IdeologySection"; // Now Principles
 import TimelineSection from "@/components/home/TimelineSection"; // Now History
 import BookRecommendations from "@/components/home/BookRecommendations";
 import JoinCTA, { Disclaimer } from "@/components/home/JoinCTA";
 
 // New Components from About Page Refactor
-import AboutIntro from "@/components/home/AboutIntro";
+import AboutUsSection from "@/components/home/AboutUsSection";
+import VisionMissionSection from "@/components/home/VisionMissionSection";
 import PolicyContent from "@/components/home/PolicyContent";
-import DreamSection from "@/components/home/DreamSection";
-import MissionSection from "@/components/home/MissionSection";
 import YouthVoiceSection from "@/components/home/YouthVoiceSection";
 import QuotesGrid from "@/components/home/QuotesGrid";
 import FactCheckSection from "@/components/home/FactCheckSection";
@@ -33,23 +31,16 @@ export default function Home() {
 
             {/* FeaturedGrid Removed - Moved to /news */}
 
-            {/* 2. About Us Introduction */}
-            <AboutIntro />
+            {/* 2. About Us Section */}
+            <AboutUsSection />
+
+            <VisionMissionSection />
 
             {/* 3. Detailed Policy Content */}
             <PolicyContent />
 
-            {/* 4. Our Dream */}
-            <DreamSection />
-
-            {/* 5. Our Mission */}
-            <MissionSection />
-
             {/* 6. History Timeline */}
             <TimelineSection />
-
-            {/* 7. Principles (Ideology) */}
-            <IdeologySection />
 
             {/* 7. Youth Voice Parallax */}
             <YouthVoiceSection />

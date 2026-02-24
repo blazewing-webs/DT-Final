@@ -12,8 +12,8 @@ const content = {
     tn: {
         pageTitle: "தொடர்பு",
         tagline: "கருத்து • கேள்வி • இணைவு",
-        callTitle: "சிந்திக்கத் தயாரா? மாற்றத்தை உருவாக்க விரும்புகிறீர்களா?",
-        callBody: "இன்றே திராவிட தலைமுறையில் இணைவோம். உண்மை, ஆதாரம் உள்ள செய்திகளை மட்டுமே அனுப்பவும்.",
+        callTitle: "சிந்திக்கத் தயாரா?",
+        callBody: "மாற்றத்தை உருவாக்க விரும்புகிறீர்களா? இன்றே திராவிட தலைமுறையில் இணைவோம். உண்மை, ஆதாரம் உள்ள செய்திகளை மட்டுமே அனுப்பவும்.",
         joinTitle: "இணைய வழிகள்:",
         joins: [
             "இந்த சிந்தனையில் நீங்களும் பங்கெடுக்கலாம்",
@@ -35,14 +35,15 @@ const content = {
     en: {
         pageTitle: "Contact / Join Us",
         tagline: "Ideas • Voices • Movement",
-        callTitle: "Ready to think? Do you want to create change?",
-        callBody: "Join Diravida Thalaimurai today. We welcome news tips and submissions only with facts and credible sources.",
+        callTitle: "Ready to think?",
+        callBody: "Do you want to create change? Join Diravida Thalaimurai today. We welcome news tips and submissions only with facts and credible sources.",
         joinTitle: "You can:",
         joins: [
             "Be part of this movement",
             "Join us as a Volunteer",
             "Share your views and ideas",
             "Submit Articles / Essays / Poems",
+            "Contribute to writing, art, and media",
         ],
         tagline2: "📩 Together, let us build a rational society.",
         contactTitle: "Get in Touch",
