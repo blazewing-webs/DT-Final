@@ -31,20 +31,6 @@ export default function TimelineSection() {
             title: "முதல் வெற்றி",
             desc: "பேரறிஞர் அண்ணா தலைமையில் திமுக ஆட்சியமைத்தது. மதராஸ் மாநிலம் 'தமிழ்நாடு' என பெயர் சூட்டப்பட்டது.",
             image: "https://media.assettype.com/thenewsminute/2026-02-10/n3yqy9x4/WhatsApp-Image-2026-02-10-at-19.19.38.jpeg?w=1200&h=675&auto=format%2Ccompress&fit=max&enlarge=true"
-        },
-        {
-            year: "1969-2018",
-            leader: "கலைஞர் கருணாநிதி",
-            title: "நவீன தமிழ்நாடு",
-            desc: "சம சமூக நீதி, இட ஒதுக்கீடு, தகவல் தொழில்நுட்ப புரட்சி, மற்றும் உள்கட்டமைப்பு மேம்பாடு.",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRr7kEb0BpBaHBOgP1mBPNOxfHE3Q7sQA2s6A&s"
-        },
-        {
-            year: "2021-Present",
-            leader: "மு.க. ஸ்டாலின்",
-            title: "திராவிட மாடல்",
-            desc: "அனைவருக்குமான வளர்ச்சி. 'எல்லோருக்கும் எல்லாம்' என்ற தத்துவத்தின் அடிப்படையில் நல்லாட்சி.",
-            image: "https://data.indianexpress.com/election2019/about/images/politician/mk-stalin.jpg?w=330"
         }
     ];
 
