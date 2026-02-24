@@ -26,7 +26,7 @@ export default function TopBar() {
                         <Link href="#" className="hover:text-dravida-red transition-colors"><Youtube className="h-3.5 w-3.5" /></Link>
                     </div>
                     <div className="flex gap-4 font-bold text-neutral-300">
-                        <Link href="/about" className="hover:text-white transition-colors">எங்களை பற்றி</Link>
+                        <Link href="/#policy" className="hover:text-white transition-colors">எங்கள் கொள்கை</Link>
                         <Link href="/contact" className="hover:text-white transition-colors">தொடர்புக்கு</Link>
                         <Link href="/login" className="hover:text-white transition-colors">உள்நுழைய</Link>
                     </div>

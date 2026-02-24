@@ -9,7 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const content = {
     tn: {
-        pageTitle: "எங்களை பற்றி",
+        pageTitle: "எங்கள் கொள்கை",
         pageSubtitle: "About Us",
         whatTitle: "திராவிட தலைமுறை என்றால் என்ன?",
         whatBody: "திராவிட தலைமுறை ஒரு கட்சி சார்பு ஊடகம் அல்ல. இது திராவிட சிந்தனையில் நின்று செயல்படும் சுதந்திர செய்தி தளம்.",
@@ -72,8 +72,8 @@ const content = {
         disclaimer: "இந்த இணையதளத்தில் வெளியிடப்படும் கருத்துகள், அந்த எழுத்தாளரின் தனிப்பட்ட கருத்தாக இருக்கலாம். திராவிட தலைமுறை எந்த சட்டப்பொறுப்பையும் ஏற்காது.",
     },
     en: {
-        pageTitle: "About Us",
-        pageSubtitle: "எங்களை பற்றி",
+        pageTitle: "Our Policy",
+        pageSubtitle: "எங்கள் கொள்கை",
         whatTitle: "What is Diravida Thalaimurai?",
         whatBody: "Diravida Thalaimurai is not a party-affiliated media platform. It is an independent news and media space that operates firmly grounded in Dravidian thought and social justice values.",
         styleTitle: "Our Journalistic Approach",

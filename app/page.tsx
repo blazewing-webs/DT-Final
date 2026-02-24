@@ -12,6 +12,7 @@ import JoinCTA, { Disclaimer } from "@/components/home/JoinCTA";
 
 // New Components from About Page Refactor
 import AboutIntro from "@/components/home/AboutIntro";
+import PolicyContent from "@/components/home/PolicyContent";
 import DreamSection from "@/components/home/DreamSection";
 import MissionSection from "@/components/home/MissionSection";
 import YouthVoiceSection from "@/components/home/YouthVoiceSection";
@@ -35,16 +36,19 @@ export default function Home() {
             {/* 2. About Us Introduction */}
             <AboutIntro />
 
-            {/* 3. Our Dream */}
+            {/* 3. Detailed Policy Content */}
+            <PolicyContent />
+
+            {/* 4. Our Dream */}
             <DreamSection />
 
-            {/* 4. Our Mission */}
+            {/* 5. Our Mission */}
             <MissionSection />
 
-            {/* 5. History Timeline */}
+            {/* 6. History Timeline */}
             <TimelineSection />
 
-            {/* 6. Principles (Ideology) */}
+            {/* 7. Principles (Ideology) */}
             <IdeologySection />
 
             {/* 7. Youth Voice Parallax */}
