@@ -171,19 +171,7 @@ export default function HeritageHero({ dictionary }: { dictionary?: any }) {
                         {t.description}
                     </motion.p>
 
-                    <motion.ul
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.7 }}
-                        className="flex flex-col gap-2 mb-10"
-                    >
-                        <li className="flex items-center gap-2 text-sm md:text-base font-semibold text-neutral-900">
-                            <span className="text-blue-600">👉</span> {t.bullet1}
-                        </li>
-                        <li className="flex items-center gap-2 text-sm md:text-base font-semibold text-neutral-900">
-                            <span className="text-blue-600">👉</span> {t.bullet2}
-                        </li>
-                    </motion.ul>
+
                 </div>
 
                 {/* Right Column: Carousel */}

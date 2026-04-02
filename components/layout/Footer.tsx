@@ -64,10 +64,10 @@ export default function Footer() {
                             சமூக நீதி, பகுத்தறிவு மற்றும் சுயமரியாதை கொள்கைகளை முன்னெடுக்கும் டிஜிட்டல் தளம். திராவிட இயக்கத்தின் வரலாற்றுப் பெருமைகளையும், நவீன காலத் தேவைகளையும் இணைக்கும் குரல்.
                         </p>
                         <div className="flex gap-4 pt-2">
-                            {settings.facebook && <SocialLink href={settings.facebook} icon={<Facebook className="h-5 w-5" />} />}
-                            {settings.twitter && <SocialLink href={settings.twitter} icon={<Twitter className="h-5 w-5" />} />}
-                            {settings.instagram && <SocialLink href={settings.instagram} icon={<Instagram className="h-5 w-5" />} />}
-                            {settings.youtube && <SocialLink href={settings.youtube} icon={<Youtube className="h-5 w-5" />} />}
+                            <SocialLink href="https://www.facebook.com/profile.php?id=61575443348208" icon={<Facebook className="h-5 w-5" />} />
+                            <SocialLink href="https://x.com/diravida_news" icon={<Twitter className="h-5 w-5" />} />
+                            <SocialLink href="https://www.instagram.com/diravida_thalaimurai/" icon={<Instagram className="h-5 w-5" />} />
+                            <SocialLink href="https://www.youtube.com/@DIRAVIDATHALAIIMURAI" icon={<Youtube className="h-5 w-5" />} />
                         </div>
                     </div>
 
@@ -137,10 +137,19 @@ export default function Footer() {
                             <p>© 2026 – {isTamil ? "திராவிட தலைமுறை" : "Diravida Thalaimurai"}</p>
                             <p className="text-xs text-neutral-400 mt-1 uppercase tracking-widest">{isTamil ? "சிந்தனை ஒரு புரட்சி." : "Thought is a revolution."}</p>
                         </div>
-                        <div className="flex gap-6">
-                            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-                            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+                        <div className="flex flex-col md:flex-row items-center gap-6">
+                            <div className="flex items-center gap-4 border-r border-neutral-800 pr-6 mr-6 hidden md:flex">
+                                <a href="https://www.facebook.com/profile.php?id=61575443348208" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-white transition-colors"><Facebook className="h-4 w-4" /></a>
+                                <a href="https://x.com/diravida_news" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-white transition-colors"><Twitter className="h-4 w-4" /></a>
+                                <a href="https://www.instagram.com/diravida_thalaimurai/" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-white transition-colors"><Instagram className="h-4 w-4" /></a>
+                                <a href="https://www.youtube.com/@DIRAVIDATHALAIIMURAI" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-white transition-colors"><Youtube className="h-4 w-4" /></a>
+                            </div>
+                            <div className="flex gap-6">
+                                <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                                <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>

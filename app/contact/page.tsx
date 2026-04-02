@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { Mail, Phone, MapPin, Loader2, Send, Users } from "lucide-react";
-import { doc, getDoc } from "firebase/firestore";
+import { Mail, Phone, MapPin, Loader2, Send, Users, Search, UserCheck, ChevronDown } from "lucide-react";
+import { doc, getDoc, collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -31,6 +31,12 @@ const content = {
         msgLabel: "செய்தி",
         msgPlaceholder: "உங்கள் கருத்து / கேள்வி",
         submit: "அனுப்புக",
+        reportersTitle: "மாவட்ட வாரியான செய்தியாளர்கள்",
+        searchPlaceholder: "பெயர் அல்லது மாவட்டத்தைத் தேடுங்கள்...",
+        reporterDistrict: "மாவட்டம்",
+        reporterPhone: "அழைக்க",
+        noReporters: "செய்தியாளர்கள் இல்லை.",
+        viewAllReporters: "அனைத்து செய்தியாளர்களையும் காண்க",
     },
     en: {
         pageTitle: "Contact / Join Us",
@@ -55,6 +61,12 @@ const content = {
         msgLabel: "Message",
         msgPlaceholder: "Your thoughts / questions",
         submit: "Send Message",
+        reportersTitle: "District wise Reporters",
+        searchPlaceholder: "Search by name or district...",
+        reporterDistrict: "District",
+        reporterPhone: "Call",
+        noReporters: "No reporters found.",
+        viewAllReporters: "View All District Reporters",
     },
 };
 
@@ -64,15 +76,28 @@ const emails = [
     { label: "General", addr: "contact@dravidthalaimurai.in" },
 ];
 
+export interface Reporter {
+    id: string;
+    name: string;
+    district: string;
+    phone: string;
+    email?: string;
+    image?: string;
+}
+
 export default function ContactPage() {
     const [settings, setSettings] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [reporters, setReporters] = useState<Reporter[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [expandedDistricts, setExpandedDistricts] = useState<string[]>([]);
     const { isTamil } = useLanguage();
     const t = isTamil ? content.tn : content.en;
 
     useEffect(() => {
-        const fetchSettings = async () => {
+        const fetchData = async () => {
             try {
+                // Fetch Settings
                 const docRef = doc(db, "settings", "general");
                 const docSnap = await getDoc(docRef);
                 setSettings(docSnap.exists() ? docSnap.data() : {
@@ -80,14 +105,73 @@ export default function ContactPage() {
                     phone: "+91 98765 43210",
                     address: "Chennai, Tamil Nadu, India"
                 });
+
+                // Fetch Reporters
+                const q = query(collection(db, "reporters"), orderBy("district", "asc"));
+                const querySnapshot = await getDocs(q);
+                const reportersList: Reporter[] = [];
+                querySnapshot.forEach((doc) => {
+                    reportersList.push({ id: doc.id, ...doc.data() } as Reporter);
+                });
+
+                // Fallback if empty (for initial setup)
+                if (reportersList.length === 0) {
+                    setReporters([
+                        { id: "1", name: "S. Kumaran", district: "Chennai", phone: "+91 98765 00000", email: "kumaran@dravida.com" },
+                        { id: "2", name: "M. Abdul", district: "Madurai", phone: "+91 98765 00001", email: "abdul@dravida.com" },
+                        { id: "3", name: "R. Priya", district: "Coimbatore", phone: "+91 98765 00002", email: "priya@dravida.com" },
+                        { id: "4", name: "J. David", district: "Trichy", phone: "+91 98765 00003", email: "david@dravida.com" },
+                        { id: "5", name: "K. Selvam", district: "Salem", phone: "+91 98765 00004", email: "selvam@dravida.com" },
+                        { id: "6", name: "A. Rajesh", district: "Chennai", phone: "+91 98765 00005", email: "rajesh@dravida.com" },
+                    ]);
+                } else {
+                    setReporters(reportersList);
+                }
             } catch (error) {
                 console.error(error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchSettings();
+        fetchData();
     }, []);
+
+    // Filter and Group Reporters
+    const filteredReporters = useMemo(() => {
+        return reporters.filter(r =>
+            r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            r.district.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [reporters, searchQuery]);
+
+    const groupedReporters = useMemo(() => {
+        return filteredReporters.reduce((acc, reporter) => {
+            if (!acc[reporter.district]) acc[reporter.district] = [];
+            acc[reporter.district].push(reporter);
+            return acc;
+        }, {} as Record<string, Reporter[]>);
+    }, [filteredReporters]);
+
+    const districts = useMemo(() => {
+        return Object.keys(groupedReporters).sort();
+    }, [groupedReporters]);
+
+    // Automatically expand districts if searching, collapse if cleared
+    useEffect(() => {
+        if (searchQuery.trim() !== "") {
+            setExpandedDistricts(districts);
+        } else {
+            setExpandedDistricts([]);
+        }
+    }, [searchQuery, districts]);
+
+    const toggleDistrict = (district: string) => {
+        setExpandedDistricts(prev =>
+            prev.includes(district)
+                ? prev.filter(d => d !== district)
+                : [...prev, district]
+        );
+    };
 
     return (
         <main className="min-h-screen bg-neutral-50 font-sans">
@@ -113,14 +197,110 @@ export default function ContactPage() {
                     </div>
                     <p className="text-amber-400 font-bold">{t.tagline2}</p>
                 </div>
-                <div className="bg-dravida-red py-4">
-                    <div className="container mx-auto px-6 max-w-5xl">
-                        <p className="text-white font-bold text-sm">{t.contactTitle}</p>
+            </div>
+
+            {/* Reporters Section - Accordion Style (Now at Top) */}
+            <section className="bg-white border-b border-neutral-200 py-16">
+                <div className="container mx-auto px-6 max-w-5xl">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                        <div>
+                            <h2 className="text-3xl font-black text-neutral-900 mb-2">{t.reportersTitle}</h2>
+                            <div className="inline-block px-4 py-1.5 bg-neutral-100 rounded-full text-xs font-black text-neutral-500 uppercase tracking-widest">
+                                {t.viewAllReporters}
+                            </div>
+                        </div>
+
+                        {/* Search Bar */}
+                        <div className="relative max-w-md w-full">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                            <input
+                                type="text"
+                                placeholder={t.searchPlaceholder}
+                                className="w-full pl-12 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-dravida-red focus:outline-none transition font-medium"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
                     </div>
+
+                    {districts.length > 0 ? (
+                        <div className="space-y-4">
+                            {districts.map(district => {
+                                const isOpen = expandedDistricts.includes(district);
+                                return (
+                                    <div key={district} className={`border rounded-2xl transition-all duration-300 ${isOpen ? 'bg-neutral-50 border-neutral-200 shadow-sm' : 'bg-white border-neutral-100 hover:border-dravida-red/30'}`}>
+                                        {/* Accordion Header */}
+                                        <button
+                                            onClick={() => toggleDistrict(district)}
+                                            className="w-full p-6 flex items-center justify-between text-left group"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className={`w-12 h-12 flex items-center justify-center rounded-xl transition-colors ${isOpen ? 'bg-dravida-red text-white' : 'bg-neutral-100 text-neutral-400 group-hover:text-dravida-red group-hover:bg-dravida-red/5'}`}>
+                                                    <MapPin className="w-6 h-6" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-black text-neutral-900">{district}</h3>
+                                                    <p className="text-xs font-bold text-neutral-500 uppercase tracking-widest">
+                                                        {groupedReporters[district].length} {isTamil ? "செய்தியாளர்கள்" : "Reporters"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className={`w-10 h-10 flex items-center justify-center rounded-full transition-transform duration-300 ${isOpen ? 'bg-white rotate-180 text-dravida-red shadow-sm' : 'bg-neutral-50 text-neutral-400 group-hover:text-dravida-red'}`}>
+                                                <ChevronDown className="w-5 h-5" />
+                                            </div>
+                                        </button>
+
+                                        {/* Accordion Content */}
+                                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 pb-8 px-6' : 'max-h-0 opacity-0 px-6'}`}>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 border-t border-neutral-200/60">
+                                                {groupedReporters[district].map(reporter => (
+                                                    <div key={reporter.id} className="bg-white rounded-xl p-5 border border-neutral-200 hover:border-dravida-red transition-all group/card">
+                                                        <div className="flex items-center gap-4 mb-4">
+                                                            <div className="w-10 h-10 bg-neutral-50 flex items-center justify-center rounded-lg border border-neutral-100 text-neutral-400 group-hover/card:text-dravida-red group-hover/card:bg-dravida-red/5 transition-colors">
+                                                                <UserCheck className="w-5 h-5" />
+                                                            </div>
+                                                            <div>
+                                                                <h4 className="font-bold text-neutral-900 group-hover/card:text-dravida-red transition-colors text-sm">{reporter.name}</h4>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="space-y-2 mt-auto pt-2 border-t border-neutral-100">
+                                                            <div className="flex items-center gap-2 text-neutral-600 hover:text-dravida-red transition-colors">
+                                                                <Phone className="w-3.5 h-3.5" />
+                                                                <a href={`tel:${reporter.phone}`} className="text-[13px] font-bold">{reporter.phone}</a>
+                                                            </div>
+                                                            {reporter.email && (
+                                                                <div className="flex items-center gap-2 text-neutral-600 hover:text-dravida-red transition-colors">
+                                                                    <Mail className="w-3.5 h-3.5" />
+                                                                    <a href={`mailto:${reporter.email}`} className="text-[13px] font-bold truncate">{reporter.email}</a>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="text-center py-20 bg-neutral-50 rounded-3xl border border-dashed border-neutral-300">
+                            <Users className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
+                            <p className="text-neutral-500 font-bold">{t.noReporters}</p>
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            {/* Red CTA Bar */}
+            <div className="bg-dravida-red py-4">
+                <div className="container mx-auto px-6 max-w-5xl">
+                    <p className="text-white font-bold text-sm tracking-wider uppercase">{t.contactTitle}</p>
                 </div>
             </div>
 
-            {/* Main Content */}
+            {/* Main Contact Content */}
             <section className="container mx-auto px-6 py-16 max-w-5xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
 
@@ -193,6 +373,7 @@ export default function ContactPage() {
                     </div>
                 </div>
             </section>
+
             <Footer />
         </main>
     );
