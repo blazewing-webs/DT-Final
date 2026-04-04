@@ -7,7 +7,7 @@ import Footer from "@/components/layout/Footer";
 import HeritageHero from "@/components/home/HeritageHero";
 import TimelineSection from "@/components/home/TimelineSection"; // Now History
 import BookRecommendations from "@/components/home/BookRecommendations";
-import JoinCTA, { Disclaimer } from "@/components/home/JoinCTA";
+import JoinCTA from "@/components/home/JoinCTA";
 
 // New Components from About Page Refactor
 import AboutUsSection from "@/components/home/AboutUsSection";
@@ -63,7 +63,6 @@ export default function Home() {
             {/* 11. Call to Action */}
             <JoinCTA />
 
-            <Disclaimer />
             <Footer />
         </main>
     );

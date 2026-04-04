@@ -68,7 +68,7 @@ const content = {
             "புகைப்படங்கள் தவறாக பயன்படுத்தப்படமாட்டாது",
             "தவறான தகவல் அறிந்ததும் நீக்கப்படும்",
         ],
-        disclaimerTitle: "பொறுப்புத் துறப்பு",
+        disclaimerTitle: "எங்கள் கொள்கை",
         disclaimer: "இந்த இணையதளத்தில் வெளியிடப்படும் கருத்துகள், அந்த எழுத்தாளரின் தனிப்பட்ட கருத்தாக இருக்கலாம். திராவிட தலைமுறை எந்த சட்டப்பொறுப்பையும் ஏற்காது.",
     },
     en: {
@@ -131,7 +131,7 @@ const content = {
             "Images and photographs will not be misused, manipulated, or published unethically",
             "Any misinformation identified will be corrected or removed immediately",
         ],
-        disclaimerTitle: "Disclaimer",
+        disclaimerTitle: "Our Policy",
         disclaimer: "The views and opinions expressed on this website are solely those of the respective authors. Diravida Thalaimurai does not accept any legal responsibility for such individual opinions or expressions.",
     },
 };
