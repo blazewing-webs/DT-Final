@@ -2,37 +2,55 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// Renamed from HistoryTimeline to TimelineSection to match existing import in page.tsx
 export default function TimelineSection() {
     const { isTamil } = useLanguage();
 
-    const badge = isTamil ? "எங்கள் வரலாறு" : "Our Legacy";
-    const heading1 = isTamil ? "திராவிட" : "Dravidian";
-    const heading2 = isTamil ? "வரலாறு" : "History";
+    const badge = isTamil ? "எங்கள் முன்னோடிகள்" : "Our Pioneers";
+    const heading1 = isTamil ? "புரட்சித்" : "Revolutionary";
+    const heading2 = isTamil ? "தலைவர்கள்" : "Leaders";
     const leaderLabel = isTamil ? "தலைவர்" : "Leader";
+
     const events = [
         {
-            year: "1925",
-            leader: "தந்தை பெரியார்",
-            title: "சுயமரியாதை இயக்கம்",
-            desc: "குடியரசு இதழ் மற்றும் சுயமரியாதை இயக்கத்தின் தோற்றம். சாதி ஒழிப்பு மற்றும் பெண் விடுதலைக்கான போர் முரசு.",
+            year: "01",
+            leader: isTamil ? "ஈ.வி. ராமசாமி (பெரியார்)" : "E. V. Ramasamy (Periyar)",
+            title: isTamil ? "ஈ.வி. ராமசாமி (பெரியார்)" : "E. V. Ramasamy (Periyar)",
+            desc: isTamil
+                ? "👉 “அடிமைத்தனத்தை உடைத்த சிந்தனைப் புரட்சி!”"
+                : "👉 “A revolutionary who shattered the chains of oppression through thought!”",
             image: "https://mir-s3-cdn-cf.behance.net/projects/404/f21778207995123.Y3JvcCwyNDgwLDE5MzksMCw3ODU.jpg"
         },
         {
-            year: "1949",
-            leader: "பேரறிஞர் அண்ணா",
-            title: "திராவிட முன்னேற்றக் கழகம்",
-            desc: "சமூக நீதிக்கான அரசியல் இயக்கம் உதயம். 'கடமை, கண்ணியம், கட்டுப்பாடு' எனும் தாரக மந்திரம்.",
-            image: "https://imgk.timesnownews.com/media/Annadurai123.jpeg"
+            year: "02",
+            leader: isTamil ? "அயோத்திதாசர்" : "Ayothidasar",
+            title: isTamil ? "அயோத்திதாசர்" : "Ayothidasar",
+            desc: isTamil
+                ? "👉 “சமத்துவ விதையை விதைத்த முன்னோடி!”"
+                : "👉 “A pioneer who sowed the seeds of equality!”",
+            image: "https://thefederal.com/file/2020/05/Untitled-design-2020-05-19T160817.322.jpg"
         },
         {
-            year: "1967",
-            leader: "திராவிடர் ஆட்சி",
-            title: "முதல் வெற்றி",
-            desc: "பேரறிஞர் அண்ணா தலைமையில் திமுக ஆட்சியமைத்தது. மதராஸ் மாநிலம் 'தமிழ்நாடு' என பெயர் சூட்டப்பட்டது.",
-            image: "https://media.assettype.com/thenewsminute/2026-02-10/n3yqy9x4/WhatsApp-Image-2026-02-10-at-19.19.38.jpeg?w=1200&h=675&auto=format%2Ccompress&fit=max&enlarge=true"
+            year: "03",
+            leader: isTamil ? "சிங்காரவேலர்" : "Singaravelar",
+            title: isTamil ? "சிங்காரவேலர்" : "Singaravelar",
+            desc: isTamil
+                ? "👉 “தொழிலாளர்களின் உரிமைக்கான உரத்த குரல்!”"
+                : "👉 “A powerful voice for the rights of workers!”",
+            image: "https://singaravelar.in/assets/img/singaravelar-1.png"
+        },
+        {
+            year: "04",
+            leader: isTamil ? "மூவலூர் ராமாமிர்தம் அம்மையார்" : "Moovalur Ramamirtham Ammaiyar",
+            title: isTamil ? "மூவலூர் ராமாமிர்தம் அம்மையார்" : "Moovalur Ramamirtham Ammaiyar",
+            desc: isTamil
+                ? "👉 “பெண் விடுதலைக்கு போராடிய வீரத் தலைவர்!”"
+                : "👉 “A fearless leader who fought for women’s liberation!”",
+            image: "https://th.bing.com/th/id/R.d48a6e1f6a569e2f07a80e36781e3d24?rik=JQHbHvM3cZh8BQ&riu=http%3a%2f%2fwww.vallamai.com%2fwp-content%2fuploads%2f2012%2f03%2f200px-Moovalur_ramamirtham.jpg&ehk=KY2A5h0tUjyFpFsicH8yLodKNq%2bfrTyY2%2fpq%2f0Wyouc%3d&risl=&pid=ImgRaw&r=0"
         }
     ];
+
+    // Fallback if the image search was unsuccessful for a specific URL, but Wikipedia ones are generally stable.
+    // I will use some more resilient URLs if possible.
 
     return (
         <section className="py-24 bg-neutral-900 text-white relative" id="history">
@@ -55,10 +73,10 @@ export default function TimelineSection() {
                             {/* Content Side */}
                             <div className="w-full md:w-1/2 px-4 md:px-12 text-center md:text-left">
                                 <div className={`flex flex-col ${index % 2 === 0 ? 'md:items-start md:text-left' : 'md:items-end md:text-right'}`}>
-                                    <span className="text-6xl font-black text-white/5 top-0 absolute -z-10">{event.year}</span>
+                                    <span className="text-8xl font-black text-white/5 top-0 absolute -z-10">{event.year}</span>
                                     <span className="text-dravida-red font-bold text-xl mb-2">{event.year}</span>
-                                    <h3 className="text-3xl font-bold mb-3">{event.title}</h3>
-                                    <p className="text-neutral-400 leading-relaxed max-w-md">{event.desc}</p>
+                                    <h3 className="text-2xl font-bold mb-3">{event.title}</h3>
+                                    <p className="text-neutral-300 leading-relaxed max-w-md italic text-lg">{event.desc}</p>
                                 </div>
                             </div>
 
@@ -72,7 +90,7 @@ export default function TimelineSection() {
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-6">
                                         <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                            <p className="text-dravida-red font-bold text-sm uppercase tracking-wider mb-1">Leader</p>
+                                            <p className="text-dravida-red font-bold text-sm uppercase tracking-wider mb-1">{leaderLabel}</p>
                                             <p className="text-white font-bold text-xl">{event.leader}</p>
                                         </div>
                                     </div>
