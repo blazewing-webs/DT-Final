@@ -111,7 +111,7 @@ export default function Footer() {
                             <li className="flex items-start gap-3">
                                 <MapPin className="h-5 w-5 text-dravida-red shrink-0 mt-1" />
                                 <span className="text-sm">
-                                    {settings.address || "எண் 12, அண்ணா சாலை, தேனாம்பேட்டை, சென்னை - 600018."}
+                                    {settings.address || "எண் 21, சுப்பராய முதலி தெரு, ராயப்பேட்டை, சென்னை - 600014."}
                                 </span>
                             </li>
                             <li className="flex items-center gap-3">
@@ -122,7 +122,7 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="h-5 w-5 text-dravida-red shrink-0" />
-                                <span className="text-sm">{settings.phone || "+91 44 2432 XXXX"}</span>
+                                <span className="text-sm">{settings.phone || "+91 94883 48974, +91 63828 23886"}</span>
                             </li>
                         </ul>
                     </div>

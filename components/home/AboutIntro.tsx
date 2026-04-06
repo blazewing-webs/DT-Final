@@ -5,7 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const text = {
     tn: {
-        badge: "எங்கள் கொள்கை",
+        badge: "பொறுப்புத் துறப்பு",
         title1: "திராவிடத்",
         title2: "தலைமுறை",
         p1: "திராவிடத் தலைமுறை என்பது சமூக நீதி, சமத்துவம், மற்றும் பகுத்தறிவு சிந்தனைகளை முன்னெடுக்கும் ஓர் இளைஞர் இயக்கம். எங்கள் நோக்கம், தந்தை பெரியார், பேரறிஞர் அண்ணா, முத்தமிழறிஞர் கலைஞர் ஆகியோரின் கொள்கைகளை இன்றைய நவீன உலகிற்கு ஏற்ப கொண்டு செல்வதே ஆகும்.",
@@ -14,7 +14,7 @@ const text = {
         imgSub: "Social Justice Warriors",
     },
     en: {
-        badge: "Our Policy",
+        badge: "Disclaimer",
         title1: "Diravida",
         title2: "Thalaimurai",
         p1: "Diravida Thalaimurai is a youth movement that champions social justice, equality, and rationalist thought. Our aim is to carry forward the principles of Thanthai Periyar, Perarignar Anna, and Muthamizharignar Kalaignar and apply them to the modern world.",

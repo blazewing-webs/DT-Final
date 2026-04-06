@@ -17,7 +17,7 @@ import {
 
 const content = {
     tn: {
-        pageSubtitle: "எங்கள் கொள்கை",
+        pageSubtitle: "பொறுப்புத் துறப்பு",
         introTitle: "திராவிட தலைமுறை",
         introSubtitle: "உண்மை பேசுவது எப்போதும் வசதியானது அல்ல. அதனால் தான் அது அவசியம்.",
         standTitle: "எங்கள் நிலைப்பாடு",
@@ -57,7 +57,7 @@ const content = {
         warningBody2: "அது குற்றத்தில் பங்கேற்பு."
     },
     en: {
-        pageSubtitle: "Our Policy",
+        pageSubtitle: "Disclaimer",
         introTitle: "Diravida Thalaimurai",
         introSubtitle: "Speaking the truth is never comfortable. That is precisely why it is necessary.",
         standTitle: "Our Stand",

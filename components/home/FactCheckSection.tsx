@@ -230,7 +230,7 @@ export default function FactCheckSection() {
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <a
-                                href="mailto:factcheck@dravidthalaimurai.in"
+                                href="mailto:factcheck@diravidathalaimurai.com"
                                 className="w-full sm:w-auto px-8 py-4 bg-white text-blue-900 rounded-xl font-bold hover:bg-blue-50 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.2)] flex items-center justify-center gap-2 group"
                             >
                                 <ShieldAlert className="w-5 h-5" />

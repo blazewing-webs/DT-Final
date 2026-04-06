@@ -20,7 +20,7 @@ const navItems = [
     },
     { tn: "மாத இதழ்", en: "Monthly Magazine", href: "/magazine" },
     { tn: "ஆசிரியர் கருத்து", en: "Editorial Note", href: "/editorial" },
-    { tn: "எங்கள் கொள்கை", en: "Our Policy", href: "/about" },
+    { tn: "பொறுப்புத் துறப்பு", en: "Disclaimer", href: "/about" },
     { tn: "தொடர்பு", en: "Contact", href: "/contact" },
 ];
 

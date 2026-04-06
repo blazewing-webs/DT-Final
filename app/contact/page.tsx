@@ -71,9 +71,9 @@ const content = {
 };
 
 const emails = [
-    { label: "News Tips", addr: "news@dravidthalaimurai.in" },
-    { label: "Editorial", addr: "editor@dravidthalaimurai.in" },
-    { label: "General", addr: "contact@dravidthalaimurai.in" },
+    { label: "News Tips", addr: "news@diravidathalaimurai.com" },
+    { label: "Editorial", addr: "editor@diravidathalaimurai.com" },
+    { label: "General", addr: "contact@diravidathalaimurai.com" },
 ];
 
 export interface Reporter {
@@ -101,9 +101,9 @@ export default function ContactPage() {
                 const docRef = doc(db, "settings", "general");
                 const docSnap = await getDoc(docRef);
                 setSettings(docSnap.exists() ? docSnap.data() : {
-                    email: "contact@dravidthalaimurai.in",
-                    phone: "+91 98765 43210",
-                    address: "Chennai, Tamil Nadu, India"
+                    email: "contact@diravidathalaimurai.com",
+                    phone: "+91 94883 48974, +91 63828 23886",
+                    address: "New No. 21, Subbaraya Mudali Street, Rayapettah, Chennai - 600014."
                 });
 
                 // Fetch Reporters

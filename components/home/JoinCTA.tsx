@@ -11,7 +11,7 @@ const text = {
         btn2: "எங்கள் திட்டங்கள்",
         future: ["✨ Podcast தொடக்கம்", "📢 தமிழ் Blog Expansion", "🎓 மாணவர்களுக்கான Workshops"],
         disclaimer: "இந்த இணையதளத்தில் வெளியிடப்படும் கருத்துகள், அந்த எழுத்தாளரின் தனிப்பட்ட கருத்தாக இருக்கலாம். திராவிட தலைமுறை எந்த சட்டப்பொறுப்பையும் ஏற்காது.",
-        note: "எங்கள் கொள்கை:",
+        note: "பொறுப்புத் துறப்பு:",
     },
     en: {
         heading: "Ready to Think?",
@@ -20,7 +20,7 @@ const text = {
         btn2: "Our Initiatives",
         future: ["✨ Podcast Launch", "📢 Tamil Blog Expansion", "🎓 Workshops for Students"],
         disclaimer: "The views and opinions expressed on this website are solely those of the respective authors. Diravida Thalaimurai does not accept any legal responsibility for such individual opinions or expressions.",
-        note: "Our Policy:",
+        note: "Disclaimer:",
     },
 };
 
